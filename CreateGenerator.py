@@ -15,7 +15,7 @@ class CreateGenerator(object):
         pass
 
     def get_payload_parser(self, request_type):
-        if request_type == 'json':
+        if request_type == 'json_export':
             return jsonParser
         elif request_type == 'csv':
             return csvParser
