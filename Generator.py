@@ -191,7 +191,7 @@ class Generator(object, metaclass=abc.ABCMeta):
             output_file_path = self.args.get('output_file_path')
             with open(output_file_path, 'w') as fp:
                 json.dump(file_content, fp)
-            msg_string = 'saved file content in filepath - {}'.format(output_file_path)
+            msg_string = 'saved file content in filepath - {}\n'.format(output_file_path)
             logger.info(msg_string)
             self.print_verbose(msg_string)
             return output_file_path
