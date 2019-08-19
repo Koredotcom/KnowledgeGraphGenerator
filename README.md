@@ -6,7 +6,7 @@ Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs
 [Overview](#Overview)<br> 
 [Prerequisites](#Prerequisites)<br>
 [Configuration Steps](#ConfigurationSteps)<br>
-
+[Run KnowledgeGraph Generator](#Run)<br>
 
 ## Overview
 
@@ -41,3 +41,46 @@ Configuring KnowledgeGraph Generator involves the following major steps:
 
 * **Step 4.** **Download spacy english model:** Run following command to download the model 
      <br>`python -m spacy download en`<br>
+
+## Run KnowledgeGraph Generator
+
+The command which generates KnowledgeGraph have options which need to be passed while executing the command. The following are the options which are used.
+**Note: : The options which are listed as mandatory should be given along with  command, for options which are regarded as optional, the default values mentioned will be picked**
+
+<table>
+       <tr>
+              <td> Option name </td>
+              <td> Description </td>
+              <td> Mandatory / Optional </td>
+              <td> Default value </td>
+       <tr>
+       <tr>
+              <td>--folder_path </td>
+              <td> Output folder location to store the generated graph JSON file </td>
+              <td> Optional </td>
+              <td> /data/FAQ/AoStorage/ </td>
+       </tr>
+       <tr>
+              <td> --file_path </td>
+              <td> Input file location </td>
+              <td> Mandatory </td> 
+              <td></td>
+       </tr>
+       <tr>
+              <td> --language </td>
+              <td> The language in which questions exist </td>
+              <td> Optional </td>
+              <td> en (english) </td>
+       </tr>
+       <tr>
+              <td> --type </td>
+              <td> The type of input file 
+                     <ol>
+                            <li>json_export</li>
+                            <li>csv</li>
+                            <li> csv_export </li>
+                     </ol>
+              </td>
+              <td> Mnadatory </td>
+              <td></td>
+</table>
