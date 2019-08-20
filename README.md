@@ -5,11 +5,12 @@ Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs
 
 [Overview](#Overview)<br>
 [Prerequisites](#Prerequisites)<br>
-[Configuration Steps](#ConfigurationSteps)<br>
-[Run KnowledgeGraph Generator](#Run)<br>
-[Command Options](#CommandOptions)<br>
+[Configuration Steps](#Configuration-Steps)<br>
+[Run KnowledgeGraph Generator](#Run-KnowledgeGraph-Generator)<br>
+[Command Options](#Command-Options)<br>
 [Option: langauge](#language)<br>
 [Option: type](#type)<br>
+[Output details](#OutputInfo)<br>
 
 ## Overview
 
