@@ -24,7 +24,7 @@ If you have managed your stopwords the engine will consider only those stopwords
 
 ## Prerequisites
 
-* **Python 3.6.7:** The KnowledgeGraph Generator requires python 3.6.7. If you do not already have the software, download the suitable version for your operating system from here: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+* **Python 3.6:** The KnowledgeGraph Generator requires python 3.6. If you do not already have the software, download the suitable version for your operating system from here: [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
 * **Virtual Environment:** It is advised to use virtual environment, instead of directly installing requirements in your machine directly. Follow the steps mentioned here to setup virtual environment in your machine. [https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/)
 
