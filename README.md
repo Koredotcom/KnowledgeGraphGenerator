@@ -126,6 +126,7 @@ Type specifies the type of input file. Currently only three formats are supporte
 
 ## Output details
 
-Output JSON file generated in the project root directory, i.e. under KnowledgeGraphGenerator directory<br> 
+Output JSON file generated can be located under project root directory with name of file as `ao_output.json` <br>
+
 The output JSON file can be <b> directly imported to KnowledgeCollection in bot </b> as json format
        
