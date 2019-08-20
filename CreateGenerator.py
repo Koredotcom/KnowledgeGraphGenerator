@@ -1,4 +1,3 @@
-from StartupCheck import StartupCheck
 from log.Logger import Logger
 from request_type.JSONExportParser import JSONInputParser as jsonParser
 from request_type.CSVParser import CSVInputParser as csvParser
@@ -7,7 +6,6 @@ import argparse
 import ntpath
 
 logger = Logger()
-DEFAULT_STORAGE_LOC = "/data/FAQ/AoStorage/"
 
 
 class CreateGenerator(object):
@@ -30,7 +28,6 @@ class CreateGenerator(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--folder_path', help='folder where to save generated files', default=DEFAULT_STORAGE_LOC)
     parser.add_argument('--file_path', help='path for input json file')
     parser.add_argument('--language', help='language in which questions present', default='en')
     parser.add_argument('--v', help='to get detailed console logging', default=False)
@@ -48,15 +45,12 @@ if __name__ == '__main__':
 
     args = dict()
     startup_checklist = list()
-    args['output_folder_path'] = _input_arguments.folder_path
     _file_name = path_leaf(_input_arguments.file_path)
-    args['output_file_path'] = _input_arguments.folder_path + _file_name.split('.')[0] + 'ao_output.json'
+    args['output_file_path'] = 'ao_output.json'
     args['lang_code'] = _input_arguments.language
     args['verbose'] = _input_arguments.v
     args['input_file_path'] = _input_arguments.file_path
     args['request_type'] = _input_arguments.type
-    startup_checklist.append(args.get('output_folder_path'))
     print_verbose('startup check initialised')
-    StartupCheck.initialize(startup_checklist)
     ontology_generator = CreateGenerator()
     ontology_generator.generate_graph(args)
