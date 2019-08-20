@@ -26,7 +26,7 @@ If you have managed your stopwords the engine will consider only those stopwords
 
 * **Python 3.6.7:** The KnowledgeGraph Generator requires python 3.6.7. If you do not already have the software, download the suitable version for your operating system from here: [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
-* **Virtual Environment:** It is preferred to use virtual environment, instead of directly installing requirements in your machine directly. Follow the steps mentioned here to setup virtual environment in your machine. Please find operating system specific instructions: [https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/)
+* **Virtual Environment:** It is advised to use virtual environment, instead of directly installing requirements in your machine directly. Follow the steps mentioned here to setup virtual environment in your machine. [https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/)
 
 ## Configuration Steps
 
@@ -66,12 +66,6 @@ The command which generates KnowledgeGraph have options which need to be passed 
               <td> Mandatory / Optional </td>
               <td> Default value </td>
        <tr>
-       <tr>
-              <td>--folder_path</td>
-              <td> Output folder location to store the generated graph JSON file </td>
-              <td> Optional </td>
-              <td> /data/FAQ/AoStorage/ </td>
-       </tr>
        <tr>
               <td> --file_path </td>
               <td> Input file location </td>
@@ -136,8 +130,6 @@ Type specifies the type of input file. Currently only three formats are supporte
 
 ## Output details
 
-Output file generated will be in the directory you mentioned as an argument to  `--folder_path` option, if you haven't mentioned any path, then the output JSON file is saved in the following location<br>
-       `/data/FAQ/AoStorage/`
- 
+Output JSON file generated in the project root directory, i.e. under KnowledgeGraphGenerator directory<br> 
 The output JSON file can be <b> directly imported to KnowledgeCollection in bot </b> as json format
        
