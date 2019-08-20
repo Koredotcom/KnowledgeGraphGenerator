@@ -2,11 +2,13 @@
 
 # KnowledgeGraphGenerator
 Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs, define the hierarchy between these terms, and also associate the FAQs to the right terms.
-
-[Overview](#Overview)<br> 
+[Overview](#Overview)<br>
 [Prerequisites](#Prerequisites)<br>
 [Configuration Steps](#ConfigurationSteps)<br>
 [Run KnowledgeGraph Generator](#Run)<br>
+[Command Options](#CommandOptions)<br>
+[Language](#language)<br>
+[Type](#type)<br>
 
 ## Overview
 
