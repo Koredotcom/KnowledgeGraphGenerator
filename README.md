@@ -49,10 +49,6 @@ Configuring KnowledgeGraph Generator involves the following major steps:
 ## Run KnowledgeGraph Generator
 Command - `python  CreateGenerator.py --file_path 'INPUT_FILE_PATH' --type 'INPUT_TYPE' --language 'LANGUAGE_CODE' --v true` <br>
 
-A sample command looks like this <br>
-
-![Sample Command](https://github.com/Koredotcom/KnowledgeGraphGenerator/blob/master/blob/command.png)
-
 The command which generates KnowledgeGraph have options which need to be passed while executing the command. The following are the options which are used.<br>
 
 ## Command Options
