@@ -32,14 +32,14 @@ If you have managed your stopwords the engine will consider only those stopwords
 
 Configuring KnowledgeGraph Generator involves the following major steps:
 
-* **Step 1:** **Download the KnowledgeGraphGenerator from GitHub :** You can find the repository here: [https://github.com/Koredotcom/KnowledgeGraphGenerator](https://github.com/Koredotcom/KnowledgeGraphGenerator)
+* **Step 1:** **Download the KnowledgeGraphGenerator from GitHub :** Find the repository here: [https://github.com/Koredotcom/KnowledgeGraphGenerator](https://github.com/Koredotcom/KnowledgeGraphGenerator)
 
-* **Step 2:** **Activate virtual environment:** Please execute the following command with required changes in it to activate the virtual environment 
+* **Step 2:** **Activate virtual environment:** Execute the following command with required changes in it to activate the virtual environment 
        <br> `source virtual_environments_folder_location/virtualenv_name/bin/activate`<br>
    Once the virtual environemnt is activated you should see virtual environment name at the start of every command in the console. Something like this
    ![Image alt text](https://github.com/Koredotcom/KnowledgeGraphGenerator/blob/master/blob/venv.png)
    
-* **Step 3:** **Install requirements for the project:** Please run the following command from your project root directory (KnowledgeGraphGenerator) to install requirements
+* **Step 3:** **Install requirements for the project:** Run the following command from your project root directory (KnowledgeGraphGenerator) to install requirements
    <br> `pip install -r requirements.txt`<br>
     Run <br>`pip list`<br> command to verify is all the installed requirements
 
