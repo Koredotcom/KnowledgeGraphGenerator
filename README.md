@@ -8,8 +8,8 @@ Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs
 [Configuration Steps](#ConfigurationSteps)<br>
 [Run KnowledgeGraph Generator](#Run)<br>
 [Command Options](#CommandOptions)<br>
-[Language](#language)<br>
-[Type](#type)<br>
+[Option: langauge](#language)<br>
+[Option: type](#type)<br>
 
 ## Overview
 
@@ -132,3 +132,11 @@ Type specifies the type of input file. Currently only three formats are supporte
               <strong> csv - </strong> <p> This format is enabled to support input from KnowledgeExtraction. To build input file in this format, all you need to do is copy all questions in <b>first column</b> and their respective answers in <b>second column</b> and save it as .csv file
        </li>
 </ol>
+
+## Output details
+
+Output file generated will be in the directory you mentioned as an argument to  `--folder_path` option, if you haven't mentioned any path, then the output JSON file is saved in the following location<br>
+       `/data/FAQ/AoStorage/`
+ 
+The output JSON file can be <b> directly imported to KnowledgeCollection in bot </b> as json format
+       
