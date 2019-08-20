@@ -14,13 +14,11 @@ Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs
 
 ## Overview
 
-Kore.ai KnowledgeGraph Generator enables you to cut down your effort in building ontology in Knowledge Collection section by automating this process through one single command.
-
-In regular procedure of building KnowledgeGraph, you need to create the ontology and add questions under respective terms and create tags if necessary. The same can be replicating by just creating required input format file and running this KnowledgeGraph generator. 
-
+Kore.ai KnowledgeGraph Generator enables you to cut down your effort in building ontology in Knowledge Collection section by automating this process.
+ 
 Output generated through this engine can be directly imported in KnowledgeCollection and you can use the faqs after training the KnowledgeCollection. However, user should manually add synonyms if he wants to. Since the engine won't support this yet.
 
-If you have managed your stopwords the engine will consider only those stopwords in generating the graph considering the fact that you pass JSON or CSV export directly. If CSV format from extraction type is given as input or user haven't modified hos stopword collection, Engine uses his predefined set of stopwords
+If you have managed your stopwords the engine will consider only those stopwords in generating the graph considering the fact that you pass JSON or CSV export directly. If CSV format from extraction type is given as input or user haven't modified stopword collection, Engine uses it's predefined set of stopwords
 
 ## Prerequisites
 
