@@ -2,7 +2,7 @@ import json
 import traceback
 from itertools import count as it_count
 from collections import namedtuple
-from Generator import Generator
+from request_type.Parser import Parser
 from log.Logger import Logger
 from phrase_finder import PhraseFinder
 
@@ -10,16 +10,19 @@ logger = Logger()
 phrase_finder = PhraseFinder()
 
 
-class JSONInputParser(Generator):
+class JSONExportParser(Parser):
 
-    def parse_and_generate(self):
+    def parse(self):
         try:
+            response = dict()
             self.faq_payload = self.read_input_from_file()
             self.print_verbose('pre processing input data ...')
-            self.stop_tokens = self.get_stopwords_for_json()
+            stop_tokens = self.get_stopwords_for_json()
             questions_map, ques_to_altq_map = self.create_question_maps()
-            self.print_verbose('generating ontology from the data ...')
-            self.generate_ontology_from_phrases(questions_map, ques_to_altq_map)
+            response['question_map'] = questions_map
+            response['altq_map'] = ques_to_altq_map
+            response['stop_words'] = stop_tokens
+            return response
         except Exception:
             error_msg = traceback.format_exc()
             logger.error(error_msg)

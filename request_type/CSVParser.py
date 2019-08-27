@@ -4,7 +4,7 @@ from itertools import count as it_count
 from collections import namedtuple
 
 from phrase_finder import PhraseFinder
-from Generator import Generator
+from request_type.Parser import Parser
 from log.Logger import Logger
 from common import *
 
@@ -12,15 +12,18 @@ logger = Logger()
 phrase_finder = PhraseFinder()
 
 
-class CSVInputParser(Generator):
+class CSVParser(Parser):
 
-    def parse_and_generate(self):
+    def parse(self):
+        response = dict()
         self.faq_payload = self.read_input_from_file()
         self.print_verbose('pre processing input data ...')
-        self.stop_tokens = self.get_stopwords()
+        stop_tokens = self.get_stopwords()
         questions_map, ques_to_altq_map = self.create_question_maps()
-        self.print_verbose('generating ontology from the data ...')
-        self.generate_ontology_from_phrases(questions_map, ques_to_altq_map)
+        response['question_map'] = questions_map
+        response['altq_map'] = ques_to_altq_map
+        response['stop_words'] = stop_tokens
+        return response
 
     def read_input_from_file(self):
         csv_data = list()
@@ -62,4 +65,3 @@ class CSVInputParser(Generator):
             logger.error(traceback.format_exc())
         finally:
             return question_id_map, ques_to_altq_id_map
-

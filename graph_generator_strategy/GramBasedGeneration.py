@@ -7,16 +7,15 @@ from phrase_finder import PhraseFinder
 from log.Logger import Logger
 
 logger = Logger()
-phrase_finder = PhraseFinder()
+phrase_finder_obj = PhraseFinder()
 
 
-class OntologyGenerator(object):
-    def __init__(self, stop_tokens):
-        self.stop_tokens = stop_tokens
+class GramBasedGenerator(object):
+    def __init__(self):
         pass
 
     @staticmethod
-    def filter_substrings(node_names):
+    def _filter_substrings(node_names):
         new_node_names = copy.deepcopy(node_names)
         for node_1 in node_names:
             node_1_stripped = node_1.strip()
@@ -32,7 +31,9 @@ class OntologyGenerator(object):
                     pass
         return new_node_names
 
-    def process_qna(self, phrases, uni_tokens, verbs, qna_object_map):
+    def generate_graph(self, qna_object_map, stop_tokens):
+        normalized_ques_list = [qna_obj.normalized_ques for qna_obj in qna_object_map.values()]
+        phrases, uni_tokens, verbs = phrase_finder_obj.find_all_phrases(normalized_ques_list, stop_tokens)
         most_commons_terms = dict()
         quest_ontology_map = defaultdict(dict)
         logger.info('Initiated ontology generation')
@@ -49,12 +50,10 @@ class OntologyGenerator(object):
                 most_commons_terms.update(phrases.most_common())
                 most_commons_terms.update(uni_tokens.most_common())
                 most_commons_terms.update(verbs.most_common())
-                ind = 0
                 for term, cnt in phrases.most_common():
-                    ind += 1
                     if cnt == 1:
                         break
-                    if term in self.stop_tokens:
+                    if term in stop_tokens:
                         continue
                     try:
                         regex = re.compile("\\b" + term + "\\b")
@@ -65,10 +64,9 @@ class OntologyGenerator(object):
                         print(traceback.format_exc())
 
                 for term, cnt in uni_tokens.most_common():
-                    ind += 1
                     if cnt == 1:
                         break
-                    if term in self.stop_tokens:
+                    if term in stop_tokens:
                         continue
                     try:
                         regex = re.compile("\\b" + term + "\\b")
@@ -79,7 +77,6 @@ class OntologyGenerator(object):
                         print(traceback.format_exc())
 
                 for term, cnt in verbs.most_common():
-                    ind += 1
                     if cnt == 1:
                         break
                     try:
@@ -89,7 +86,7 @@ class OntologyGenerator(object):
                     except Exception:
                         pass
 
-                terms = sorted(self.filter_substrings(terms), key=lambda x: most_commons_terms[x]) + [BOT_NAME]
+                terms = sorted(self._filter_substrings(terms), key=lambda x: most_commons_terms[x]) + [BOT_NAME]
                 quest_ontology_map[ques_id]['terms'] = terms
                 tags = [tags] if tags else []
                 quest_ontology_map[ques_id]['tags'] = tags

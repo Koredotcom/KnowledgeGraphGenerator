@@ -1,16 +1,4 @@
-import json
 import re
-import abc
-import traceback
-
-from StopWords import StopWords
-from log.Logger import Logger
-from phrase_finder import PhraseFinder
-from OntologyGenerator import OntologyGenerator
-from common import *
-
-logger = Logger()
-phrase_finder = PhraseFinder()
 
 
 class StringProcessor(object):
@@ -140,7 +128,7 @@ class StringProcessor(object):
             '(%s)' %
             '|'.join(list(self.contractions_dict.keys())), re.IGNORECASE)
 
-    def expand_contractions(self, input_string):
+    def _expand_contractions(self, input_string):
         """ expand standard english language contractions """
         try:
             def replace(match):
@@ -155,9 +143,9 @@ class StringProcessor(object):
         """ clean the input string"""
         return_string = input_string.lower()
         if language_code == 'en':
-            expanded_string = self.expand_contractions(return_string)
+            expanded_string = self._expand_contractions(return_string)
             if expanded_string.find("'") != -1:
-                expanded_string = self.expand_contractions(expanded_string)
+                expanded_string = self._expand_contractions(expanded_string)
 
             return_string = re.sub(
                 r'\W+',
@@ -165,102 +153,3 @@ class StringProcessor(object):
                 expanded_string)  # Remove Non AlphaNumeric Character
 
         return return_string
-
-
-string_processor = StringProcessor()
-
-
-class Generator(object, metaclass=abc.ABCMeta):
-
-    def __init__(self, args):
-        self.args = args
-        logger.info(json.dumps({'Generation_Request': self.args}, indent=2))
-        self.stop_tokens = set()
-        self.faq_payload = dict()
-
-    @abc.abstractmethod
-    def read_input_from_file(self):
-        pass
-
-    @abc.abstractmethod
-    def create_question_maps(self):
-        pass
-
-    def save_to_file(self, file_content):
-        try:
-            output_file_path = self.args.get('output_file_path')
-            with open(output_file_path, 'w') as fp:
-                json.dump(file_content, fp)
-            msg_string = 'saved file content in filepath - {}\n'.format(output_file_path)
-            logger.info(msg_string)
-            self.print_verbose(msg_string)
-            return output_file_path
-        except Exception:
-            logger.error(traceback.format_exc())
-            self.print_verbose('Failed saving response as json')
-
-    def get_stopwords(self):
-        lang = 'en_kore' if self.args.get('lang_code') == 'en' else self.args.get('lang_code')
-        return StopWords.get_stop_words(lang)
-
-    def print_verbose(self, statement):
-        if self.args.get('verbose', False):
-            print(statement)
-
-    def normalize_string(self, input_string):
-        return string_processor.normalize(input_string, self.args.get('lang_code'))
-
-    def create_response_json(self, questions_map, ques_to_altq_map, tag_term_map):
-        response = {'faqs': []}
-        try:
-            logger.info('Creating response json')
-            for ques_id in ques_to_altq_map:
-                qna_obj = questions_map.get(ques_id)
-                result = copy.deepcopy(JSON_TEMPLATE)
-                result['question'] = qna_obj.question
-                result['terms'] = tag_term_map[ques_id].get('terms')
-                result['tags'] = tag_term_map[ques_id].get('tags')
-                result['responseType'] = qna_obj.response_type
-
-                for primary_ans in qna_obj.answer:
-                    answer_obj = get_answer_object()[0]
-                    answer_obj['text'] = primary_ans.get('text', 'test')
-                    answer_obj['type'] = primary_ans.get('type')
-                    answer_obj['channel'] = primary_ans.get('channel')
-                    result['answer'].append(copy.deepcopy(answer_obj))
-
-                for alt_ques_id in ques_to_altq_map.get(ques_id, []):
-                    alt_qna_result = dict()
-                    alt_qna_obj = questions_map.get(alt_ques_id)
-                    alt_qna_result['question'] = alt_qna_obj.question
-                    alt_tags = list(set(tag_term_map.get(alt_ques_id).get('terms')).difference(set(result['terms'])))
-                    alt_qna_result['tags'] = tag_term_map.get(alt_ques_id).get('tags') + copy.deepcopy(alt_tags)
-                    alt_qna_result['terms'] = tag_term_map[ques_id].get('terms')
-                    result['alternateQuestions'].append(copy.deepcopy(alt_qna_result))
-
-                for alt_answer in qna_obj.subAnswers:
-                    answer_obj = get_answer_object()
-                    answer_obj[0]['text'] = alt_answer[0].get('text', 'test')
-                    answer_obj[0]['type'] = alt_answer[0].get('type')
-                    answer_obj[0]['channel'] = alt_answer[0].get('channel')
-                    result['alternateAnswers'].append(copy.deepcopy(answer_obj))
-
-                response['faqs'].append(result)
-
-            return self.save_to_file(response)
-        except Exception:
-            logger.error(traceback.format_exc())
-            raise Exception('Failed in creating final response')
-
-    def generate_ontology_from_phrases(self, questions_map, ques_to_altq_map):
-        try:
-            logger.info("finding phrases and terms")
-            phrases, uni_tokens, verbs = phrase_finder.find_all_phrases(questions_map, self.stop_tokens)
-            ontology_generator = OntologyGenerator(self.stop_tokens)
-            tag_term_map = ontology_generator.process_qna(phrases, uni_tokens, verbs, questions_map)
-            response_file_path = self.create_response_json(questions_map, ques_to_altq_map, tag_term_map)
-            print('Ontology generated successfully and saved in {}'.format(response_file_path))
-            return True
-        except Exception:
-            logger.error(traceback.format_exc())
-            return False

@@ -4,7 +4,7 @@ from itertools import count as it_count
 from collections import namedtuple
 
 from phrase_finder import PhraseFinder
-from Generator import Generator
+from request_type.Parser import Parser
 from log.Logger import Logger
 from common import *
 
@@ -12,23 +12,25 @@ logger = Logger()
 phrase_finder = PhraseFinder()
 
 
-class CSVExportParser(Generator):
-    def parse_and_generate(self):
-        self.faq_row_counter = 0
+class CSVExportParser(Parser):
+    def parse(self):
+        response = dict()
         try:
             self.print_verbose('pre processing input data ...')
             self.faq_payload = self.read_input_from_file()
-            questions_map, ques_to_altq_map = self.create_question_maps()
-            self.stop_tokens = self.get_stopwords_from_csv()
-            self.print_verbose('generating ontology from the data ...')
-            self.generate_ontology_from_phrases(questions_map, ques_to_altq_map)
+            questions_map, ques_to_altq_map, faq_row_count = self.create_question_maps()
+            stop_tokens = self.get_stopwords_from_csv(faq_row_count)
+            response['question_map'] = questions_map
+            response['altq_map'] = ques_to_altq_map
+            response['stop_words'] = stop_tokens
+            return response
         except Exception:
             error_msg = traceback.format_exc()
             logger.error(error_msg)
             self.print_verbose(error_msg)
 
-    def get_stopwords_from_csv(self):
-        for row in self.faq_payload[self.faq_row_counter + 1:]:
+    def get_stopwords_from_csv(self, faq_row_counter):
+        for row in self.faq_payload[faq_row_counter + 1:]:
             if row[0] == 'kgParams':
                 return set(row[4:])
             else:
@@ -49,6 +51,7 @@ class CSVExportParser(Generator):
     def create_question_maps(self):
         question_id_map = dict()
         ques_to_altq_id_map = dict()
+        faq_row_count = 0
         prev_primary_ques_id = None
         try:
             qna_record = namedtuple('qna', ['question', 'normalized_ques', 'answer', 'subAnswers', 'response_type'])
@@ -73,12 +76,11 @@ class CSVExportParser(Generator):
                         ques_to_altq_id_map[prev_primary_ques_id].append(alt_ques_id)
                 else:
                     break
-                self.faq_row_counter += 1
-            return question_id_map, ques_to_altq_id_map
+                faq_row_count += 1
+            return question_id_map, ques_to_altq_id_map, faq_row_count
         except Exception:
             logger.error(traceback.format_exc())
             self.print_verbose('Failed in pre processing input')
-
 
     @staticmethod
     def prepare_answer_object(answer_text):
