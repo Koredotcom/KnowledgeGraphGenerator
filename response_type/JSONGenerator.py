@@ -21,7 +21,8 @@ class JSONGenerator(object):
         except Exception:
             logger.error(traceback.format_exc())
 
-    def create_response(self, response_object):
+    @staticmethod
+    def create_response(response_object):
         questions_map = response_object.get('question_map', dict())
         ques_to_altq_map = response_object.get('altq_map', dict())
         tag_term_map = response_object.get('tag_term_map', dict())

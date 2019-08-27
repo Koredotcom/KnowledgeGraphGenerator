@@ -46,6 +46,7 @@ class CSVParser(Parser):
         return answer_object
 
     def create_question_maps(self):
+        logger.info('Creating question maps')
         question_id_map = dict()
         ques_to_altq_id_map = dict()
         try:

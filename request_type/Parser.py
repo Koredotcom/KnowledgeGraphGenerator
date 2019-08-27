@@ -17,7 +17,6 @@ class Parser(object, metaclass=abc.ABCMeta):
     def __init__(self, args):
         self.args = args
         logger.info(json.dumps({'Generation_Request': self.args}, indent=2))
-        self.stop_tokens = set()
         self.faq_payload = dict()
 
     @abc.abstractmethod

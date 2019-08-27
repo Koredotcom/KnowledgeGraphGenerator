@@ -2,7 +2,7 @@ from log.Logger import Logger
 from request_type.JSONExportParser import JSONExportParser as jsonParser
 from request_type.CSVParser import CSVParser as csvParser
 from request_type.CSVExportParser import CSVExportParser
-from graph_generator_strategy.GramBasedGeneration import GramBasedGenerator
+from graph_generation_strategy.GramBasedGeneration import GramBasedGenerator
 from response_type.JSONGenerator import JSONGenerator
 import argparse
 

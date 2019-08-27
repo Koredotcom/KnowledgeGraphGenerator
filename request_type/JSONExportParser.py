@@ -47,6 +47,7 @@ class JSONExportParser(Parser):
         question_id_map = dict()
         ques_to_altq_id_map = dict()
         try:
+            logger.info('Creating question maps')
             id_generator = it_count(start=10001, step=1)
             qna_record = namedtuple('qna', ['question', 'normalized_ques', 'answer', 'subAnswers', 'response_type'])
             for qna in self.faq_payload.get('faqs'):

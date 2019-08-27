@@ -25,8 +25,6 @@ class GramBasedGenerator(object):
                     if node_1_stripped != node_2_stripped:
                         if node_2_stripped in node_1_stripped:
                             new_node_names.remove(node_2)
-                        elif node_1_stripped in node_2_stripped:
-                            new_node_names.remove(node_1)
                 except Exception:
                     pass
         return new_node_names
