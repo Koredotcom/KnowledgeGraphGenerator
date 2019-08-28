@@ -22,9 +22,9 @@ If you have managed your stopwords the engine will consider only those stopwords
 
 ## Prerequisites
 
-* **Python 3.6:** The KnowledgeGraph Generator requires python 3.6. If you do not already have the software, download the suitable version for your operating system from here: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+* **Python 3.6:** The KnowledgeGraph Generator requires python 3.6. Can be downloaded from here: [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
-* **Virtual Environment:** It is advised to use virtual environment, instead of directly installing requirements in your machine directly. Follow the steps mentioned here to setup virtual environment in your machine. [https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/)
+* **Virtual Environment:** It is advised to use virtual environment, instead of directly installing requirements in the system directly. Follow the steps mentioned here to setup virtual environment. [https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/)
 
 ## Configuration Steps
 
@@ -45,7 +45,7 @@ Configuring KnowledgeGraph Generator involves the following major steps:
      <br>`python -m spacy download en`<br>
 
 ## Run KnowledgeGraph Generator
-Command - `python  CreateGenerator.py --file_path 'INPUT_FILE_PATH' --type 'INPUT_TYPE' --language 'LANGUAGE_CODE' --v true` <br>
+Command - `python  KnowledgeGraphGenerator.py --file_path 'INPUT_FILE_PATH' --type 'INPUT_TYPE' --language 'LANGUAGE_CODE' --v true` <br>
 
 The command which generates KnowledgeGraph have options which need to be passed while executing the command. The following are the options which are used.<br>
 
@@ -112,10 +112,10 @@ The following languages are supported currently and others will be added in incr
 Type specifies the type of input file. Currently only three formats are supported and those are listed below: <br>
 <ol>
        <li>
-              <strong> json_export - </strong> <p>You can generate input in this format from bot builder tool by exporting KnowledgeCollection and selecting JSON format for export </p>
+              <strong> json_export - </strong> <p>You can generate input in this format from kore.ai bot builder tool by exporting KnowledgeCollection and selecting JSON format for export </p>
        </li>
        <li> 
-              <strong> csv_export - </strong> <p>You can generate input int this format from bot builder tool by exporting KnowledgeCollection and selecting CSV format for export </p>
+              <strong> csv_export - </strong> <p>You can generate input int this format from kore.ai bot builder tool by exporting KnowledgeCollection and selecting CSV format for export </p>
        </li>
        <li>
               <strong> csv - </strong> <p> This format is enabled to support input from KnowledgeExtraction. To build input file in this format, all you need to do is copy all questions in <b>first column</b> and their respective answers in <b>second column</b> and save it as .csv file
