@@ -1,9 +1,8 @@
-import csv
 import traceback
 from itertools import count as it_count
 from collections import namedtuple
 
-from phrase_finder import PhraseFinder
+from strategy.phrase_finder import PhraseFinder
 from request_type.Parser import Parser
 from log.Logger import Logger
 from common import *
@@ -17,7 +16,7 @@ class CSVExportParser(Parser):
         response = dict()
         try:
             self.print_verbose('pre processing input data ...')
-            self.faq_payload = self.read_input_from_file()
+            self.faq_payload = self.read_file('csv')
             questions_map, ques_to_altq_map, faq_row_count = self.create_question_maps()
             stop_tokens = self.get_stopwords_from_csv(faq_row_count)
             response['question_map'] = questions_map
@@ -35,18 +34,6 @@ class CSVExportParser(Parser):
                 return set(row[4:])
             else:
                 return self.get_stopwords()
-
-    def read_input_from_file(self):
-        csv_data = list()
-        try:
-            with open(self.args.get('input_file_path'), 'r') as fp:
-                csv_reader = csv.reader(fp)
-                for row in csv_reader:
-                    csv_data.append(row)
-        except Exception:
-            logger.error(traceback.format_exc())
-        finally:
-            return csv_data
 
     def create_question_maps(self):
         logger.info('Creating question maps')

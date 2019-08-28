@@ -3,7 +3,7 @@ import re
 from collections import defaultdict
 from tqdm import tqdm
 from common import *
-from phrase_finder import PhraseFinder
+from strategy.phrase_finder import PhraseFinder
 from log.Logger import Logger
 
 logger = Logger()

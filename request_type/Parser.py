@@ -1,10 +1,11 @@
 import json
 import abc
 import traceback
+import csv
 
 from StopWords import StopWords
 from log.Logger import Logger
-from phrase_finder import PhraseFinder
+from strategy.phrase_finder import PhraseFinder
 from StringProcessor import StringProcessor
 
 logger = Logger()
@@ -20,14 +21,41 @@ class Parser(object, metaclass=abc.ABCMeta):
         self.faq_payload = dict()
 
     @abc.abstractmethod
-    def read_input_from_file(self):
-        pass
-
-    @abc.abstractmethod
     def create_question_maps(self):
         pass
 
-    def save_to_file(self, file_content):
+    @staticmethod
+    def read_file_json(file_path):
+        json_data = dict()
+        try:
+            with open(file_path, 'r') as fp:
+                json_data = json.load(fp)
+        except Exception:
+            logger.error(traceback.format_exc())
+        finally:
+            return json_data
+
+    @staticmethod
+    def read_file_csv(file_path):
+        csv_data = list()
+        try:
+            with open(file_path, 'r') as fp:
+                csv_reader = csv.reader(fp)
+                for row in csv_reader:
+                    csv_data.append(row)
+        except Exception:
+            logger.error(traceback.format_exc())
+        finally:
+            return csv_data
+
+    def read_file(self, file_type):
+        file_path = self.args.get('input_file_path')
+        if file_type == 'json':
+            return self.read_file_json(file_path)
+        elif file_type == 'csv':
+            return self.read_file_csv(file_path)
+
+    def save_file(self, file_content):
         try:
             output_file_path = self.args.get('output_file_path')
             with open(output_file_path, 'w') as fp:

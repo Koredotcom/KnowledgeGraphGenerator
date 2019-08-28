@@ -1,10 +1,9 @@
-import json
 import traceback
 from itertools import count as it_count
 from collections import namedtuple
 from request_type.Parser import Parser
 from log.Logger import Logger
-from phrase_finder import PhraseFinder
+from strategy.phrase_finder import PhraseFinder
 
 logger = Logger()
 phrase_finder = PhraseFinder()
@@ -15,7 +14,7 @@ class JSONExportParser(Parser):
     def parse(self):
         try:
             response = dict()
-            self.faq_payload = self.read_input_from_file()
+            self.faq_payload = self.read_file('json')
             self.print_verbose('pre processing input data ...')
             stop_tokens = self.get_stopwords_for_json()
             questions_map, ques_to_altq_map = self.create_question_maps()
@@ -27,15 +26,6 @@ class JSONExportParser(Parser):
             error_msg = traceback.format_exc()
             logger.error(error_msg)
             self.print_verbose(error_msg)
-
-    def read_input_from_file(self):
-        try:
-            file_path = self.args.get('input_file_path')
-            with open(file_path, 'r') as fp:
-                json_data = json.load(fp)
-            return json_data
-        except Exception:
-            logger.error(traceback.format_exc())
 
     def get_stopwords_for_json(self):
         if 'kgParams' in self.faq_payload:
