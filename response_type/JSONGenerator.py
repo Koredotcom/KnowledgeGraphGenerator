@@ -54,11 +54,14 @@ class JSONGenerator(object):
                     result['alternateQuestions'].append(copy.deepcopy(alt_qna_result))
 
                 for alt_answer in qna_obj.subAnswers:
-                    answer_obj = get_answer_object()
-                    answer_obj[0]['text'] = alt_answer[0].get('text', 'test')
-                    answer_obj[0]['type'] = alt_answer[0].get('type')
-                    answer_obj[0]['channel'] = alt_answer[0].get('channel')
-                    result['alternateAnswers'].append(copy.deepcopy(answer_obj))
+                    cur_sub_answer = list()
+                    for ext_answer in alt_answer:
+                        answer_obj = get_answer_object()[0]
+                        answer_obj['text'] = ext_answer.get('text', 'test')
+                        answer_obj['type'] = ext_answer.get('type')
+                        answer_obj['channel'] = ext_answer.get('channel')
+                        cur_sub_answer.append(copy.deepcopy(answer_obj))
+                    result['alternateAnswers'].append(cur_sub_answer)
 
                 response['faqs'].append(result)
 
