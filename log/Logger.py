@@ -7,7 +7,7 @@ import logging
 import sys
 from logging.handlers import RotatingFileHandler
 
-LOG_FILENAME = "/var/www/logs/auto_kg.log"
+LOG_FILENAME = "log/auto_kg.log"
 
 class Singleton(object):
     """
