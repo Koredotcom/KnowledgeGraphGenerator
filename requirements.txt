@@ -1,5 +1,5 @@
 textacy==0.6.2
 tqdm==4.31.1
 spacy==2.1.0
-nltk==3.4
+nltk==3.4.5
 msgpack==0.6.1
