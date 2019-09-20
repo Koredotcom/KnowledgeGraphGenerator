@@ -12,7 +12,6 @@ Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs
 [Option: type](#type)<br>
 [Output details](#Output-details)<br>
 [Troubleshooting](#Troubleshooting)<br>
-[Windows Operating system](#Troubleshooting-windows)
 
 ## Overview
 
