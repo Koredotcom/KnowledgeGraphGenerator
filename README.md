@@ -11,6 +11,7 @@ Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs
 [Option: langauge](#Option-language)<br>
 [Option: type](#type)<br>
 [Output details](#Output-details)<br>
+[Troubleshooting](#Troubleshooting)<br>
 
 ## Overview
 
@@ -34,12 +35,22 @@ Configuring KnowledgeGraph Generator involves the following major steps:
 
 * **Step 2:** **Activate virtual environment:** Execute the following command with required changes in it to activate the virtual environment 
        <br> `source virtual_environments_folder_location/virtualenv_name/bin/activate`<br>
-   Once the virtual environemnt is activated you should see virtual environment name at the start of every command in the console. Something like this
+   Once the virtual environemnt is activated, you should see virtual environment name at the start of every command in the console. Something like this
    ![Image alt text](https://github.com/Koredotcom/KnowledgeGraphGenerator/blob/master/blob/venv.png)
    
 * **Step 3:** **Install requirements for the project:** Run the following command from your project root directory (KnowledgeGraphGenerator) to install requirements
    <br> `pip install -r requirements.txt`<br>
     Run <br>`pip list`<br> command to verify is all the installed requirements
+    
+    ### Note - <br>
+    **For Windows Operating System -** 
+    <ol>
+      <li>Windows 10 users should install Windows 10 SDK. You can download it from here <a href="https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/"> here</a><br></li>
+     <li>Operating system should be upto date for seamless installation of requirements. Some libraries like scipy (internal dependency) need specific dll's which are available in latest updates. Avoiding this may involve lot of troubleshooting. 
+ <br> We verified installation with build version 1903.
+     </li>
+ </ol>
+              
 
 * **Step 4.** **Download spacy english model:** Run following command to download the model 
      <br>`python -m spacy download en`<br>
@@ -127,4 +138,22 @@ Type specifies the type of input file. Currently only three formats are supporte
 Output JSON file generated can be located under project root directory with name of file as `ao_output.json` <br>
 
 The output JSON file can be <b> directly imported to KnowledgeCollection in bot </b> as json format
-       
+
+## Troubleshooting
+ ### Windows Operating system
+  [Cannot open include fil
+e: 'basetsd.h': No such file or directory](https://stackoverflow.com/questions/23691564/running-cython-in-windows-x64-fatal-error-c1083-cannot-open-include-file-ba) <br>
+  
+  <p> C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64\cl.exe /c /nolog
+o /Ox /MD /W3 /GS- /DNDEBUG -IC:\Python27\include -IC:\Python27\PC /Tchello.c /F
+obuild\temp.win-amd64-2.7\Release\hello.obj
+hello.c
+C:\Python27\include\pyconfig.h(227) : fatal error C1083: Cannot open include fil
+e: 'basetsd.h': No such file or directory
+error: command '"C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\BIN\amd64
+\cl.exe"' failed with exit status 2 </p>
+
+   [LNK1158 cannot run rc.exe x64 Visual Studio](https://stackoverflow.com/questions/35215971/lnk1158-cannot-run-rc-exe-x64-visual-studio) <br>
+   
+   
+   
