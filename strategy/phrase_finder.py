@@ -69,7 +69,7 @@ class PhraseFinder(object):
         for l in lists:
             verb_tokens = l.lemma_.split()
             for verb in verb_tokens:
-                if verb not in stop_tokens:
+                if verb not in stop_tokens and self.is_valid_word(verb):
                     verbs_list.append(verb)
         return doc_grams, unigrams, verbs_list
 
