@@ -42,6 +42,12 @@ class PhraseFinder(object):
                         pass
         return Counter({t: c for t, c in all_tokens}), Counter({t: c for t, c in uni_tokens}), verb_counter
 
+    @staticmethod
+    def is_valid_word(word):
+        if len(word) > 1:
+            return True
+        return False
+
     def find_phrases(self, sentence, stop_tokens):
         doc = nlp(sentence)
         doc_grams = []
@@ -49,23 +55,32 @@ class PhraseFinder(object):
         for i in doc.noun_chunks:
             text = " ".join([t.lemma_ if t.lemma_ != "-PRON-" else t.text for t in i])
             tokens = [t for t in text.split() if t != "" and t not in stop_tokens]
-            unigrams.extend(tokens)
+            unigrams.extend(list(filter(lambda word: self.is_valid_word(word), tokens)))
             grams = self.generate_ngrams(tokens, 3)
             grams.extend(self.generate_ngrams(tokens, 2))
-            for e in grams:
-                if e not in stop_tokens:
-                    doc_grams.append(space_join(e))
+            for word in grams:
+                if word not in stop_tokens:
+                    doc_grams.append(space_join(word))
 
         pattern = r'<VERB>?<ADV>*<VERB>+'
         doc = textacy.Doc(sentence, lang=model)
         lists = textacy.extract.pos_regex_matches(doc, pattern)
-        verbs = []
+        verbs_list = []
         for l in lists:
-            v_tokens = l.lemma_.split()
-            for v in v_tokens:
-                if v not in stop_tokens:
-                    verbs.append(v)
-        return doc_grams, unigrams, verbs
+            verb_tokens = l.lemma_.split()
+            for verb in verb_tokens:
+                if verb not in stop_tokens:
+                    verbs_list.append(verb)
+        return doc_grams, unigrams, verbs_list
 
     def generate_ngrams(self, tokens, n):
         return list(ngrams(tokens, n))
+
+if __name__ == "__main__":
+    a = 'How does the e-monies NEFT service differ from RGTS and EFT?'
+    from StopWords import StopWords
+    from StringProcessor import StringProcessor
+    a = StringProcessor().normalize(a,'en')
+    en = StopWords.get_stop_words('en')
+    cl = PhraseFinder()
+    print(cl.find_phrases(a, en))
