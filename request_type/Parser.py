@@ -28,7 +28,7 @@ class Parser(object, metaclass=abc.ABCMeta):
     def read_file_json(file_path):
         json_data = dict()
         try:
-            with open(file_path, 'r') as fp:
+            with open(file_path, 'r', encoding='utf-8') as fp:
                 json_data = json.load(fp)
         except Exception:
             logger.error(traceback.format_exc())
@@ -39,7 +39,7 @@ class Parser(object, metaclass=abc.ABCMeta):
     def read_file_csv(file_path):
         csv_data = list()
         try:
-            with open(file_path, 'r') as fp:
+            with open(file_path, 'r', encoding='utf-8') as fp:
                 csv_reader = csv.reader(fp)
                 for row in csv_reader:
                     csv_data.append(row)
