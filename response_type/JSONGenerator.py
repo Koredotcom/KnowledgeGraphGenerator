@@ -63,6 +63,9 @@ class JSONGenerator(object):
                         cur_sub_answer.append(copy.deepcopy(answer_obj))
                     result['alternateAnswers'].append(cur_sub_answer)
 
+                if result.get('responseType', 'message') == 'dialog':
+                    result['dialogRefId'] = ""
+
                 response['faqs'].append(result)
 
             return response
