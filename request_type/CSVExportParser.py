@@ -1,9 +1,6 @@
-import traceback
 from itertools import count as it_count
 from collections import namedtuple
-
-from strategy.phrase_finder import PhraseFinder
-from request_type.Parser import Parser
+from request_type.Parser import *
 from log.Logger import Logger
 from common import *
 
@@ -29,11 +26,18 @@ class CSVExportParser(Parser):
             self.print_verbose(error_msg)
 
     def get_stopwords_from_csv(self, faq_row_counter):
-        for row in self.faq_payload[faq_row_counter + 1:]:
-            if row[0] == 'kgParams':
-                return set(row[4:])
-            else:
-                return self.get_stopwords()
+        try:
+            for row in self.faq_payload[faq_row_counter + 1:]:
+                if row[0] == 'kgParams':
+                    stop_words = set(row[4:])
+                    if self.args.get('lang_code','') == 'en':
+                        stop_words.update(StopWords.english_question_words)
+                    return stop_words
+                else:
+                    return self.get_stopwords()
+        except Exception:
+            logger.error(traceback.format_exc())
+            return set()
 
     def create_question_maps(self):
         logger.info('Creating question maps')

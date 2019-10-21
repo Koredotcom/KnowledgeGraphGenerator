@@ -342,9 +342,9 @@ class StopWords:
         elif lang in ["id", "ms", "bahasa"]:
             lang = 'bahasa'
 
-        if lang in ['en', 'en_kore']:
+        if lang in ['en']:
             stopwords = cls.en
-            stopwords = set(set(stopwords) | cls.english_question_words) if lang == 'en_kore' else set(stopwords)
+            stopwords = set(set(stopwords) | cls.english_question_words)
             return stopwords
 
         else:
