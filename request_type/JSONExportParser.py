@@ -31,7 +31,7 @@ class JSONExportParser(Parser):
         try:
             if 'kgParams' in self.faq_payload:
                 stop_words = set(self.faq_payload.get('kgParams').get('stopWords'))
-                if self.args.get('lang_code','') == 'en':
+                if self.args.get('lang_code', '') == 'en':
                     stop_words.update(StopWords.english_question_words)
                 return stop_words
             else:

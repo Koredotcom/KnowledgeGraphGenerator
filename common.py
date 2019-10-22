@@ -1,5 +1,6 @@
 import spacy
 
+
 def get_answer_object():
     answer_obj = [
         {

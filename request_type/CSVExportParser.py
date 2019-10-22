@@ -32,7 +32,7 @@ class CSVExportParser(Parser):
             for row in self.faq_payload[faq_row_counter + 1:]:
                 if row[0] == 'kgParams':
                     stop_words = set(row[4:])
-                    if self.args.get('lang_code','') == 'en':
+                    if self.args.get('lang_code', '') == 'en':
                         stop_words.update(StopWords.english_question_words)
                     return stop_words
             return self.get_stopwords()

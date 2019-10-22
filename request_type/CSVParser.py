@@ -1,12 +1,11 @@
-import traceback
 from itertools import count as it_count
 from collections import namedtuple
-
 from strategy.phrase_finder import PhraseFinder
 from request_type.Parser import Parser
 from log.Logger import Logger
 from common import get_answer_object
 import copy
+import traceback
 
 logger = Logger()
 phrase_finder = PhraseFinder()

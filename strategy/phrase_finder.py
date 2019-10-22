@@ -1,9 +1,9 @@
 from collections import Counter
-import textacy
 from nltk.util import ngrams
 from tqdm import tqdm
 from common import PHRASES_FREQ_THRESHOLD, UNIGRAM_FREQ_THRESHOLD, model, nlp
 import copy
+import textacy
 
 space_join = " ".join
 
@@ -77,11 +77,13 @@ class PhraseFinder(object):
     def generate_ngrams(self, tokens, n):
         return list(ngrams(tokens, n))
 
+
 if __name__ == "__main__":
     a = 'How does the e-monies NEFT service differ from RGTS and EFT?'
     from StopWords import StopWords
     from StringProcessor import StringProcessor
-    a = StringProcessor().normalize(a,'en')
+
+    a = StringProcessor().normalize(a, 'en')
     en = StopWords.get_stop_words('en')
     cl = PhraseFinder()
     print(cl.find_phrases(a, en))
