@@ -2,7 +2,8 @@ from collections import Counter
 import textacy
 from nltk.util import ngrams
 from tqdm import tqdm
-from common import *
+from common import PHRASES_FREQ_THRESHOLD, UNIGRAM_FREQ_THRESHOLD, model, nlp
+import copy
 
 space_join = " ".join
 

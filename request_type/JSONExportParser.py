@@ -1,8 +1,9 @@
 from itertools import count as it_count
 from collections import namedtuple
-from request_type.Parser import *
+from request_type.Parser import StopWords, Parser
 from log.Logger import Logger
 from strategy.phrase_finder import PhraseFinder
+import traceback
 
 logger = Logger()
 phrase_finder = PhraseFinder()

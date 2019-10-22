@@ -5,7 +5,8 @@ from collections import namedtuple
 from strategy.phrase_finder import PhraseFinder
 from request_type.Parser import Parser
 from log.Logger import Logger
-from common import *
+from common import get_answer_object
+import copy
 
 logger = Logger()
 phrase_finder = PhraseFinder()

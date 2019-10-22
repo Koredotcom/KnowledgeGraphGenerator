@@ -1,8 +1,10 @@
 from itertools import count as it_count
 from collections import namedtuple
-from request_type.Parser import *
+from request_type.Parser import PhraseFinder, Parser, StopWords
 from log.Logger import Logger
-from common import *
+from common import get_answer_object
+import traceback
+import copy
 
 logger = Logger()
 phrase_finder = PhraseFinder()
@@ -33,8 +35,7 @@ class CSVExportParser(Parser):
                     if self.args.get('lang_code','') == 'en':
                         stop_words.update(StopWords.english_question_words)
                     return stop_words
-                else:
-                    return self.get_stopwords()
+            return self.get_stopwords()
         except Exception:
             logger.error(traceback.format_exc())
             return set()
