@@ -1,10 +1,11 @@
-import traceback
-import re
 from collections import defaultdict
 from tqdm import tqdm
-from common import *
+from common import nlp, BOT_NAME
 from strategy.phrase_finder import PhraseFinder
 from log.Logger import Logger
+import copy
+import traceback
+import re
 
 logger = Logger()
 phrase_finder_obj = PhraseFinder()
@@ -80,7 +81,7 @@ class GramBasedGenerator(object):
                     try:
                         regex = re.compile("\\b" + term + "\\b")
                         if re.findall(regex, doc):
-                            tags=term
+                            tags = term
                     except Exception:
                         pass
 

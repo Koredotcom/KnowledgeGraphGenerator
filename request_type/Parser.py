@@ -69,7 +69,7 @@ class Parser(object, metaclass=abc.ABCMeta):
             self.print_verbose('Failed saving response as json')
 
     def get_stopwords(self):
-        lang = 'en_kore' if self.args.get('lang_code') == 'en' else self.args.get('lang_code')
+        lang = self.args.get('lang_code')
         return StopWords.get_stop_words(lang)
 
     def print_verbose(self, statement):

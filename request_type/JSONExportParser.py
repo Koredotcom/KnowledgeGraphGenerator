@@ -1,9 +1,9 @@
-import traceback
 from itertools import count as it_count
 from collections import namedtuple
-from request_type.Parser import Parser
+from request_type.Parser import StopWords, Parser
 from log.Logger import Logger
 from strategy.phrase_finder import PhraseFinder
+import traceback
 
 logger = Logger()
 phrase_finder = PhraseFinder()
@@ -28,10 +28,17 @@ class JSONExportParser(Parser):
             self.print_verbose(error_msg)
 
     def get_stopwords_for_json(self):
-        if 'kgParams' in self.faq_payload:
-            return self.faq_payload.get('kgParams').get('stopWords')
-        else:
-            return self.get_stopwords()
+        try:
+            if 'kgParams' in self.faq_payload:
+                stop_words = set(self.faq_payload.get('kgParams').get('stopWords'))
+                if self.args.get('lang_code', '') == 'en':
+                    stop_words.update(StopWords.english_question_words)
+                return stop_words
+            else:
+                return self.get_stopwords()
+        except Exception:
+            logger.error(traceback.format_exc())
+            return set()
 
     def create_question_maps(self):
         question_id_map = dict()

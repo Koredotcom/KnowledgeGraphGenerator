@@ -1,7 +1,8 @@
+from log.Logger import Logger
+from common import JSON_TEMPLATE, get_answer_object
+import copy
 import json
 import traceback
-from log.Logger import Logger
-from common import *
 
 logger = Logger()
 

@@ -1,19 +1,16 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-
-import os
 import logging
-import sys
 from logging.handlers import RotatingFileHandler
 
 LOG_FILENAME = "log/auto_kg.log"
+
 
 class Singleton(object):
     """
     Singleton interface:
     http://www.python.org/download/releases/2.2.3/descrintro/#__new__
     """
+
     def __new__(cls, *args, **kwds):
         it = cls.__dict__.get("__it__")
         if it is not None:
@@ -25,28 +22,30 @@ class Singleton(object):
     def init(self, *args, **kwds):
         pass
 
+
 class LoggerManager(Singleton):
     """
     Logger Manager.
     Handles all logging files.
     """
+
     def init(self, loggername):
         self.logger = logging.getLogger(loggername)
         rhandler = None
         try:
             rhandler = RotatingFileHandler(
-                    LOG_FILENAME,
-                    mode='a',
-                    maxBytes = 10 * 1024 * 1024,
-                    backupCount=5
-                )
+                LOG_FILENAME,
+                mode='a',
+                maxBytes=10 * 1024 * 1024,
+                backupCount=5
+            )
         except:
             raise IOError("Couldn't create/open file \"" + \
                           LOG_FILENAME + "\". Check permissions.")
 
         self.logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter(
-            fmt = '[%(asctime)s] %(message)s'
+            fmt='[%(asctime)s] %(message)s'
         )
         rhandler.setFormatter(formatter)
         self.logger.addHandler(rhandler)
@@ -76,9 +75,10 @@ class Logger(object):
     """
     Logger object.
     """
+
     def __init__(self, loggername="root"):
-        self.lm = LoggerManager(loggername) # LoggerManager instance
-        self.loggername = loggername # logger name
+        self.lm = LoggerManager(loggername)  # LoggerManager instance
+        self.loggername = loggername  # logger name
 
     def debug(self, msg, *args):
         self.lm.debug(self.loggername, msg, args)
@@ -95,8 +95,8 @@ class Logger(object):
     def critical(self, msg, *args):
         self.lm.critical(self.loggername, msg, args)
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     logger = Logger()
     a = 'sa'
     b = 'as'
