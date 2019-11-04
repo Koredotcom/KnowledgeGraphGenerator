@@ -1,10 +1,10 @@
 import sys
-from pdfminer.pdfparser import PDFParser
-from pdfminer.pdfpage import PDFPage
-from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import PDFPageAggregator
-from pdfminer.layout import LAParams, LTTextBox, LTChar, LTFigure
+from pdfminer3.pdfparser import PDFParser
+from pdfminer3.pdfpage import PDFPage
+from pdfminer3.pdfdocument import PDFDocument
+from pdfminer3.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer3.converter import PDFPageAggregator
+from pdfminer3.layout import LAParams, LTTextBox, LTChar, LTFigure
 from PyPDF2 import PdfFileReader
 import json
 import unidecode
@@ -206,12 +206,15 @@ with open('pdf_attributes.csv', 'w') as f:
     first_row  =['page_no','line','is_paragraph_end','is_heading','is_header','is_footer','is_bullet_head','is_bullet_body','is_image_caption','is_table_caption','is_table_content','is_toc','is_toc_heading','is_page_no','is_doc_title','pdf_attribute']
     all_rows.append(first_row)
     for attr in pdf_attributes:
-        row = []
-        text = attr[0]
-        row.append(str(attr[-3]))
-        row.append(text)
-        for k in range(0,len(first_row) - 3):
-            row.append(0)
-        row.append(str(attr))
-        all_rows.append(row)
+        try:
+            row = []
+            text = attr[0]
+            row.append(str(attr[-3]))
+            row.append(text)
+            for k in range(0,len(first_row) - 3):
+                row.append(0)
+            row.append(str(attr))
+            all_rows.append(row)
+        except:
+            continue
     writer.writerows(all_rows)
