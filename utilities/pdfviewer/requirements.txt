@@ -1,0 +1,14 @@
+chardet==3.0.4
+fuzzywuzzy==0.17.0
+pdfminer.six==20181108
+pdfminer3==2018.12.3.0
+pdfplumber==0.5.14
+Pillow==6.2.1
+pycryptodome==3.9.3
+PyPDF2==1.26.0
+pytesseract==0.3.0
+six==1.13.0
+sortedcontainers==2.1.0
+unicodecsv==0.14.1
+Unidecode==1.1.1
+Wand==0.5.7
