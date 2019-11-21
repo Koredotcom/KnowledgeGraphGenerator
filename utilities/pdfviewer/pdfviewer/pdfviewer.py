@@ -30,15 +30,11 @@ class PDFViewer(Frame):
         self.save_path = None
         self.pdf_attributes = []
         self.pdf_to_csv = []
+        self.labels = ["page_no", "line", "is_paragraph_end", "is_heading", "is_header", "is_footer", "is_bullet_head",
+                       "is_bullet_body", "is_image_caption", "is_table_caption", "is_table_content", "is_toc",
+                       "is_toc_heading", "is_page_no", "is_doc_title", "pdf_attribute"]
+        self.rectangle_color = StringVar()
         self._init_ui()
-
-    def _to_file(self):
-        if self.pdf_to_csv:
-            filename = "%s.csv"%("pdf_extraction")
-            with open(filename, "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(["is_heading", "is_paragraph_end", "pdf_attribute"])
-                writer.writerows(self.pdf_to_csv)
 
     def _init_ui(self):
         ws = self.master.winfo_screenwidth()
@@ -79,7 +75,7 @@ class PDFViewer(Frame):
         options.grid(row=0, column=0)
 
         options.add_item('Open Files...', self._open_file)
-        options.add_item('Open Directory...', self._open_dir, seperator=True)
+        options.add_item('Save File...', self._to_file, seperator=True)
         options.add_item('Next File', self._next_file)
         options.add_item('Previous File', self._prev_file, seperator=True)
         options.add_item('Help...', self._help, seperator=True)
@@ -93,31 +89,12 @@ class PDFViewer(Frame):
         HoverButton(tools, image_path=os.path.join('', 'widgets/open_file.png'), command=self._open_file,
                     width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Open Files",
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
-        HoverButton(tools, image_path=os.path.join('', 'widgets/open_dir.png'), command=self._open_dir,
-                    width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Open Directory",
+        HoverButton(tools, image_path=os.path.join('', 'widgets/open_dir.png'), command=self._to_file,
+                    width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Save Files",
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
         HoverButton(tools, image_path=os.path.join('', 'widgets/search.png'), command=self._search_text,
                     width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Search Text",
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
-        HoverButton(tools, image_path=os.path.join('', 'widgets/extract.png'), command=self._extract_text,
-                    width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Extract Text", keep_pressed=True,
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
-        HoverButton(tools, image_path=os.path.join('', 'widgets/ocr.png'), command=self._run_ocr,
-                    width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Run OCR",
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
-
-        file_frame = Frame(tools, width=50, height=50, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
-        file_frame.pack(pady=2)
-
-        file_frame.columnconfigure(0, weight=1)
-        file_frame.columnconfigure(1, weight=1)
-
-        HoverButton(file_frame, image_path=os.path.join('', 'widgets/prev_file.png'), command=self._prev_file,
-                    width=25, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Previous File",
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).grid(row=0, column=0)
-        HoverButton(file_frame, image_path=os.path.join('', 'widgets/next_file.png'), command=self._next_file,
-                    width=25, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Next File",
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).grid(row=0, column=1)
 
         HoverButton(tool_frame, image_path=os.path.join('', 'widgets/help.png'), command=self._help,
                     width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Help",
@@ -126,12 +103,21 @@ class PDFViewer(Frame):
         labels_frame = Frame(tool_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         labels_frame.grid(row=4, column=0)
 
-        HoverButton(tools, text="Heading", command=lambda: self._extract_text("heading"),
+        HoverButton(tools, text="Heading", command=lambda: self._extract_text("is_heading", "firebrick1"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="white").pack(pady=2)
-        HoverButton(tools, text="Paragraph", command=lambda: self._extract_text("paragraph"),
+                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="firebrick1").pack(pady=2)
+        HoverButton(tools, text="Paragraph", command=lambda: self._extract_text("is_paragraph_end", "SeaGreen1"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="white").pack(pady=2)
+                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="SeaGreen1").pack(pady=2)
+        HoverButton(tools, text="Title", command=lambda: self._extract_text("is_doc_title", "DeepSkyBlue2"),
+                    bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
+                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="DeepSkyBlue2").pack(pady=2)
+        HoverButton(tools, text="Header", command=lambda: self._extract_text("is_header", "Cyan4"),
+                    bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
+                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="Cyan4").pack(pady=2)
+        HoverButton(tools, text="Footer", command=lambda: self._extract_text("is_footer", "honeydew4"),
+                    bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
+                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="honeydew4").pack(pady=2)
         # PDF Frame
         pdf_frame.columnconfigure(0, weight=1)
         pdf_frame.rowconfigure(0, weight=0)
@@ -192,7 +178,7 @@ class PDFViewer(Frame):
         canvas_frame = Frame(pdf_frame, bg=BACKGROUND_COLOR, bd=1, relief=SUNKEN)
         canvas_frame.grid(row=1, column=0, sticky='news')
 
-        self.canvas = DisplayCanvas(canvas_frame, page_height=h - 42, page_width=w - 70)
+        self.canvas = DisplayCanvas(canvas_frame, self.rectangle_color, page_height=h - 42, page_width=w - 100)
         self.canvas.pack()
 
         self.grid(row=0, column=0, sticky='news')
@@ -228,6 +214,7 @@ class PDFViewer(Frame):
             return
         self.canvas.reset()
         self._update_page()
+        self.pdf_to_csv = []
 
     def _zoom_in(self):
         if self.pdf is None:
@@ -330,7 +317,11 @@ class PDFViewer(Frame):
         image = image.annotated.rotate(self.rotate)
         self.canvas.update_image(image)
 
-    def _extract_text(self, label=None):
+
+    def _extract_text(self, label=None, color=None):
+        if color:
+            self.rectangle_color.set(color)
+            self.master.update_idletasks()
         if self.pdf is None:
             return
         if not self.canvas.draw:
@@ -342,26 +333,27 @@ class PDFViewer(Frame):
         rect = self.canvas.get_rect()
         if rect is None:
             return
-        self._clear()
+        self.canvas.rect = None
         rect = self._reproject_bbox(rect)
         page = self.pdf.pages[self.pageidx - 1]
         words = page.extract_words()
         words_in_rect = []
         # print("rect : {}".format(rect))
         for word in words:
+            # print("word : {}".format(word))
             if word['top'] >= rect[1] and word["bottom"] <= rect[3] and word['x0'] > rect[0] and word['x1'] < rect[2]:
-                # print("word : {}".format(word))
                 words_in_rect.append(word)
+        if not words_in_rect:
+            # print("No words in rectangle box")
+            return
         pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
                   page.height - words_in_rect[-1]["top"])
-        heading = 1 if label == "heading" else 0
-        paragraph = 1 if label == "paragraph" else 0
-        for pdf_attribute in self.pdf_attributes:
-            if pdf_attribute[6] == self.pageidx:
-                min_dim = pdf_attribute[3]
-                match = set([int(min_dim[x]) in range(int(pl_dim[x])-5,int(pl_dim[x])+5) for x in range(4)])
-                if len(match) == 1 and True in match:
-                    self.pdf_to_csv.append([heading,paragraph,pdf_attribute])
+        for idx,pdf_attribute in enumerate(self.pdf_attributes):
+            if pdf_attribute[0] == self.pageidx:
+                min_dim = pdf_attribute[-1][3]
+                match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 5, int(pl_dim[x]) + 5) for x in range(4)])
+                if all(match):
+                    self.pdf_to_csv.append([idx,label,self.pageidx])
                     break
             if pdf_attribute[6] > self.pageidx:
                 break
@@ -455,6 +447,24 @@ class PDFViewer(Frame):
         self.total_pages = len(self.paths)
         self.pathidx += 1
         self._load_file()
+
+    def _to_file(self):
+        # print("in file", self.pdf_to_csv)
+        dirpath = filedialog.askdirectory(initialdir=os.getcwd(),
+                                          title="Save files")
+        if not dirpath or dirpath == '':
+            self._clear()
+            return
+        filename = "%s/%s.csv" % (dirpath, "pdf_extraction")
+        with open(filename, "w", newline="") as f:
+            for idx,label,pg_no in self.pdf_to_csv:
+                if self.pdf_attributes[idx][0]==pg_no:
+                    self.pdf_attributes[idx][self.labels.index(label)] = 1
+            writer = csv.writer(f)
+            writer.writerow(self.labels)
+            writer.writerows(self.pdf_attributes)
+        self.pdf_to_csv = []
+        self._clear()
 
     def _open_dir(self):
         dir_name = filedialog.askdirectory(initialdir=os.getcwd(), title="Select Directory Containing Invoices")

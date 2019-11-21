@@ -196,17 +196,19 @@ def char_filter(string):
 def clean_string(string):
     return "".join(char_filter(string))
 
-count = 0
 
 
 def get_pdf_attributes(file_path):
     pdf_attributes = extract_attributes(file_path,[])
     pdf_attributes = clean_extracted_pdf(pdf_attributes)
+    pdf_attributes = [[attr[6],0,0,0,0,0,0,0,0,0,0,0,0,0,0,attr]for attr in pdf_attributes]
     return pdf_attributes
 
 # pdf_attributes = get_pdf_attributes(sys.argv[1])
+# print(pdf_attributes)
 
 def generate_pdf_attributes_csv():
+    count = 0
     pdf_attributes = get_pdf_attributes(sys.argv[1])
     with open('pdf_attributes.csv', 'w') as f:
         writer = csv.writer(f)
@@ -224,7 +226,7 @@ def generate_pdf_attributes_csv():
                 for k in range(0,len(first_row) - 3):
                     row.append(0)
                 row.append(str(attr))
-                print("attr",str(attr))
+                # print("attr",str(attr))
                 all_rows.append(row)
                 if count>50:
                     break

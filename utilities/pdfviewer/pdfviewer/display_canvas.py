@@ -4,12 +4,12 @@ from PIL import ImageTk
 
 class DisplayCanvas(Frame):
 
-    def __init__(self, master, page_height, page_width, **kw):
+    def __init__(self, master, rectangle_color,page_height, page_width, **kw):
         Frame.__init__(self, master, **kw)
         self.x = self.y = 0
 
         self.canvas = Canvas(self, height=page_height, width=page_width, bg='#404040', highlightbackground='#353535')
-
+        self.color = rectangle_color
         self.sbarv = Scrollbar(self, orient=VERTICAL, bg='#404040', highlightbackground='#353535')
         self.sbarh = Scrollbar(self, orient=HORIZONTAL, bg='#404040', highlightbackground='#353535')
         self.sbarv.config(command=self.canvas.yview)
@@ -48,7 +48,7 @@ class DisplayCanvas(Frame):
         self.start_y = self.canvas.canvasy(event.y)
 
         if not self.rect and self.draw:
-            self.rect = self.canvas.create_rectangle(self.x, self.y, 1, 1, outline='red')
+            self.rect = self.canvas.create_rectangle(self.x, self.y, 1, 1, outline=self.color.get())
 
     def on_move_press(self, event):
         cur_x = self.canvas.canvasx(event.x)
