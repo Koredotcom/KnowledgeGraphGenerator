@@ -4,10 +4,10 @@ from PIL import ImageTk
 
 class DisplayCanvas(Frame):
 
-    def __init__(self, master, rectangle_color,page_height, page_width, **kw):
+    def __init__(self, master, rectangle_color, page_no, page_height, page_width, **kw):
         Frame.__init__(self, master, **kw)
         self.x = self.y = 0
-
+        self.page_no = page_no
         self.canvas = Canvas(self, height=page_height, width=page_width, bg='#404040', highlightbackground='#353535')
         self.color = rectangle_color
         self.sbarv = Scrollbar(self, orient=VERTICAL, bg='#404040', highlightbackground='#353535')
@@ -18,9 +18,9 @@ class DisplayCanvas(Frame):
         self.canvas.config(yscrollcommand=self.sbarv.set)
         self.canvas.config(xscrollcommand=self.sbarh.set)
 
-        self.canvas.grid(row=0, column=0, sticky=N+S+E+W)
-        self.sbarv.grid(row=0, column=1, stick=N+S)
-        self.sbarh.grid(row=1, column=0, sticky=E+W)
+        self.canvas.grid(row=0, column=0, sticky=N + S + E + W)
+        self.sbarv.grid(row=0, column=1, stick=N + S)
+        self.sbarh.grid(row=1, column=0, sticky=E + W)
 
         top = self.winfo_toplevel()
         top.bind('<Left>', self.on_left)
@@ -37,6 +37,7 @@ class DisplayCanvas(Frame):
         self.image_obj = None
         self.pil_image = None
         self.draw = False
+        self.rectangles = {}
 
         self.start_x = None
         self.start_y = None
@@ -57,11 +58,11 @@ class DisplayCanvas(Frame):
         w, h = self.canvas.winfo_width(), self.canvas.winfo_height()
         if event.x > 0.9*w:
             self.on_right()
-        elif event.x < 0.1*w:
+        elif event.x < 0.1 * w:
             self.on_left()
-        if event.y > 0.9*h:
+        if event.y > 0.9 * h:
             self.on_down()
-        elif event.y < 0.1*h:
+        elif event.y < 0.1 * h:
             self.on_up()
 
         if self.draw:
@@ -80,7 +81,18 @@ class DisplayCanvas(Frame):
         self.canvas.yview_scroll(1, 'units')
 
     def on_button_release(self, event):
-        pass
+        if self.rect:
+            cur_x = self.canvas.canvasx(event.x)
+            cur_y = self.canvas.canvasy(event.y)
+            rectangle = [self.rect, self.start_x, self.start_y, cur_x, cur_y, self.color.get()]
+            current_page = self.page_no.get()
+            self.rectangles[current_page] = self.rectangles.get(current_page, [])
+            self.rectangles[current_page].append(rectangle)
+
+    def draw_rectangles(self, current_page):
+        if current_page in self.rectangles:
+            for _,start_x, start_y, cur_x, cur_y, color in self.rectangles[current_page]:
+                self.canvas.create_rectangle(start_x, start_y, cur_x, cur_y, outline=color)
 
     def update_image(self, image):
         self.pil_image = image
@@ -112,8 +124,8 @@ class DisplayCanvas(Frame):
     def get_rect(self):
         w, h = self.pil_image.size
         x0, y0 = self.canvas.coords(self.image_obj)
-        minx = x0 - w/2.0
-        miny = y0 - h/2.0
+        minx = x0 - w / 2.0
+        miny = y0 - h / 2.0
         if self.rect:
             rect = self.canvas.coords(self.rect)
             rect = [rect[0] + abs(minx), rect[1] + abs(miny), rect[2] + abs(minx), rect[3] + abs(miny)]

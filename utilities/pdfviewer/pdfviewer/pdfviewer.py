@@ -34,6 +34,7 @@ class PDFViewer(Frame):
                        "is_bullet_body", "is_image_caption", "is_table_caption", "is_table_content", "is_toc",
                        "is_toc_heading", "is_page_no", "is_doc_title", "pdf_attribute"]
         self.rectangle_color = StringVar()
+        self.page_no = IntVar()
         self._init_ui()
 
     def _init_ui(self):
@@ -43,7 +44,7 @@ class PDFViewer(Frame):
         w = int(h / 1.414) + 100
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
-        self.master.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        self.master.geometry('%dx%d+%d+%d' % (ws, hs, 0, 0))
         self.master.title("PDFViewer")
 
         self.master.rowconfigure(0, weight=0)
@@ -83,7 +84,7 @@ class PDFViewer(Frame):
 
         tools = Frame(tool_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         tools.grid(row=2, column=0)
-        HoverButton(tools, image_path=os.path.join('', 'widgets/clear.png'), command=self._clear,
+        HoverButton(tools, image_path=os.path.join('', 'widgets/clear.png'), command=lambda: self._clear(True),
                     width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Clear",
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
         HoverButton(tools, image_path=os.path.join('', 'widgets/open_file.png'), command=self._open_file,
@@ -91,9 +92,6 @@ class PDFViewer(Frame):
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
         HoverButton(tools, image_path=os.path.join('', 'widgets/open_dir.png'), command=self._to_file,
                     width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Save Files",
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
-        HoverButton(tools, image_path=os.path.join('', 'widgets/search.png'), command=self._search_text,
-                    width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Search Text",
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(pady=2)
 
         HoverButton(tool_frame, image_path=os.path.join('', 'widgets/help.png'), command=self._help,
@@ -178,13 +176,14 @@ class PDFViewer(Frame):
         canvas_frame = Frame(pdf_frame, bg=BACKGROUND_COLOR, bd=1, relief=SUNKEN)
         canvas_frame.grid(row=1, column=0, sticky='news')
 
-        self.canvas = DisplayCanvas(canvas_frame, self.rectangle_color, page_height=h - 42, page_width=w - 100)
+        self.canvas = DisplayCanvas(canvas_frame, self.rectangle_color, self.page_no, page_height=hs - 68,
+                                    page_width=ws - 165)
         self.canvas.pack()
 
         self.grid(row=0, column=0, sticky='news')
 
         self.master.minsize(height=h, width=w)
-        self.master.maxsize(height=h, width=w)
+        self.master.maxsize(height=hs, width=ws)
 
     def _reject(self):
         if self.pdf is None:
@@ -209,12 +208,15 @@ class PDFViewer(Frame):
         self.zoom_label.configure(text="Zoom {}%".format(int(self.scale * 100)))
         self.master.title("PDFViewer")
 
-    def _clear(self):
+    def _clear(self,all=False):
         if self.pdf is None:
             return
+        if all:
+            self.canvas.rectangles = {}
         self.canvas.reset()
         self._update_page()
         self.pdf_to_csv = []
+
 
     def _zoom_in(self):
         if self.pdf is None:
@@ -252,6 +254,7 @@ class PDFViewer(Frame):
         if self.pageidx == self.total_pages:
             return
         self.pageidx += 1
+        self.canvas.reset()
         self._update_page()
 
     def _prev_page(self):
@@ -260,6 +263,7 @@ class PDFViewer(Frame):
         if self.pageidx == 1:
             return
         self.pageidx -= 1
+        self.canvas.reset()
         self._update_page()
 
     def _last_page(self):
@@ -297,10 +301,12 @@ class PDFViewer(Frame):
         self._load_file()
 
     def _update_page(self):
+        self.page_no.set(self.pageidx)
         page = self.pdf.pages[self.pageidx - 1]
-        self.page = page.to_image(resolution=int(self.scale * 80))
+        self.page = page.to_image(resolution=int(self.scale * 160))
         image = self.page.original.rotate(self.rotate)
         self.canvas.update_image(image)
+        self.canvas.draw_rectangles(self.pageidx)
         self.page_label.configure(text="Page {} of {}".format(self.pageidx, self.total_pages))
         self.zoom_label.configure(text="Zoom {}%".format(int(self.scale * 100)))
 
@@ -311,12 +317,11 @@ class PDFViewer(Frame):
         if text == '' or text is None:
             return
         page = self.pdf.pages[self.pageidx - 1]
-        image = page.to_image(resolution=int(self.scale * 80))
+        image = page.to_image(resolution=int(self.scale * 160))
         words = [w for w in page.extract_words() if text.lower() in w['text'].lower()]
         image.draw_rects(words)
         image = image.annotated.rotate(self.rotate)
         self.canvas.update_image(image)
-
 
     def _extract_text(self, label=None, color=None):
         if color:
@@ -348,12 +353,12 @@ class PDFViewer(Frame):
             return
         pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
                   page.height - words_in_rect[-1]["top"])
-        for idx,pdf_attribute in enumerate(self.pdf_attributes):
+        for idx, pdf_attribute in enumerate(self.pdf_attributes):
             if pdf_attribute[0] == self.pageidx:
                 min_dim = pdf_attribute[-1][3]
                 match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 5, int(pl_dim[x]) + 5) for x in range(4)])
                 if all(match):
-                    self.pdf_to_csv.append([idx,label,self.pageidx])
+                    self.pdf_to_csv.append([idx, label, self.pageidx])
                     break
             if pdf_attribute[6] > self.pageidx:
                 break
@@ -457,14 +462,14 @@ class PDFViewer(Frame):
             return
         filename = "%s/%s.csv" % (dirpath, "pdf_extraction")
         with open(filename, "w", newline="") as f:
-            for idx,label,pg_no in self.pdf_to_csv:
-                if self.pdf_attributes[idx][0]==pg_no:
+            for idx, label, pg_no in self.pdf_to_csv:
+                if self.pdf_attributes[idx][0] == pg_no:
                     self.pdf_attributes[idx][self.labels.index(label)] = 1
             writer = csv.writer(f)
             writer.writerow(self.labels)
             writer.writerows(self.pdf_attributes)
-        self.pdf_to_csv = []
-        self._clear()
+        # self.pdf_to_csv = []
+        # self._clear()
 
     def _open_dir(self):
         dir_name = filedialog.askdirectory(initialdir=os.getcwd(), title="Select Directory Containing Invoices")
