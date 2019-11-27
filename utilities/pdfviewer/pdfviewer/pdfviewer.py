@@ -208,15 +208,14 @@ class PDFViewer(Frame):
         self.zoom_label.configure(text="Zoom {}%".format(int(self.scale * 100)))
         self.master.title("PDFViewer")
 
-    def _clear(self,all=False):
+    def _clear(self, all=False):
         if self.pdf is None:
             return
         if all:
             self.canvas.rectangles = {}
         self.canvas.reset()
         self._update_page()
-        self.pdf_to_csv = []
-
+        self.update_in_file_attributes(0)
 
     def _zoom_in(self):
         if self.pdf is None:
@@ -356,7 +355,7 @@ class PDFViewer(Frame):
         for idx, pdf_attribute in enumerate(self.pdf_attributes):
             if pdf_attribute[0] == self.pageidx:
                 min_dim = pdf_attribute[-1][3]
-                match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 5, int(pl_dim[x]) + 5) for x in range(4)])
+                match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 10, int(pl_dim[x]) + 10) for x in range(4)])
                 if all(match):
                     self.pdf_to_csv.append([idx, label, self.pageidx])
                     break
@@ -435,6 +434,9 @@ class PDFViewer(Frame):
             self._update_page()
             self.master.title("PDFViewer : {}".format(path))
             self.pdf_attributes = get_pdf_attributes(path)
+            with open('attributes.txt', 'w') as f:
+                for item in self.pdf_attributes:
+                    f.write("%s\n" % item)
         except (IndexError, IOError, TypeError):
             self._reject()
 
@@ -453,18 +455,24 @@ class PDFViewer(Frame):
         self.pathidx += 1
         self._load_file()
 
+    def update_in_file_attributes(self, status):
+        for idx, label, pg_no in self.pdf_to_csv:
+            if self.pdf_attributes[idx][0] == pg_no:
+                self.pdf_attributes[idx][self.labels.index(label)] = status
+        if not status:
+            # remove selected attributes from main attributes
+            self.pdf_to_csv = []
+
     def _to_file(self):
-        # print("in file", self.pdf_to_csv)
-        dirpath = filedialog.askdirectory(initialdir=os.getcwd(),
-                                          title="Save files")
-        if not dirpath or dirpath == '':
-            self._clear()
+        filepath = filedialog.asksaveasfilename(initialdir=os.getcwd(), title="Save files",
+                                                initialfile="pdf_attributes",
+                                                defaultextension=".csv",
+                                                filetypes=[('csv files', '.csv'), ('text files', '.txt')])
+        if not filepath or filepath == '':
+            # self._clear()
             return
-        filename = "%s/%s.csv" % (dirpath, "pdf_extraction")
-        with open(filename, "w", newline="") as f:
-            for idx, label, pg_no in self.pdf_to_csv:
-                if self.pdf_attributes[idx][0] == pg_no:
-                    self.pdf_attributes[idx][self.labels.index(label)] = 1
+        with open(filepath, "w", newline="") as f:
+            self.update_in_file_attributes(1)
             writer = csv.writer(f)
             writer.writerow(self.labels)
             writer.writerows(self.pdf_attributes)
