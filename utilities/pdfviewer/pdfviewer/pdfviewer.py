@@ -33,8 +33,8 @@ class PDFViewer(Frame):
         self.labels = ["page_no", "line", "is_paragraph_end", "is_heading", "is_header", "is_footer", "is_bullet_head",
                        "is_bullet_body", "is_image_caption", "is_table_caption", "is_table_content", "is_toc",
                        "is_toc_heading", "is_page_no", "is_doc_title", "pdf_attribute"]
-        self.rectangle_color = StringVar()
-        self.page_no = IntVar()
+        self.rectangle_color = None
+        self.rectangle_label = None
         self._init_ui()
 
     def _init_ui(self):
@@ -176,14 +176,16 @@ class PDFViewer(Frame):
         canvas_frame = Frame(pdf_frame, bg=BACKGROUND_COLOR, bd=1, relief=SUNKEN)
         canvas_frame.grid(row=1, column=0, sticky='news')
 
-        self.canvas = DisplayCanvas(canvas_frame, self.rectangle_color, self.page_no, page_height=hs - 68,
+        self.canvas = DisplayCanvas(canvas_frame, page_height=hs - 68,
                                     page_width=ws - 165)
+        self.canvas.viewer = self
         self.canvas.pack()
 
         self.grid(row=0, column=0, sticky='news')
 
         self.master.minsize(height=h, width=w)
         self.master.maxsize(height=hs, width=ws)
+
 
     def _reject(self):
         if self.pdf is None:
@@ -300,7 +302,6 @@ class PDFViewer(Frame):
         self._load_file()
 
     def _update_page(self):
-        self.page_no.set(self.pageidx)
         page = self.pdf.pages[self.pageidx - 1]
         self.page = page.to_image(resolution=int(self.scale * 160))
         image = self.page.original.rotate(self.rotate)
@@ -324,8 +325,8 @@ class PDFViewer(Frame):
 
     def _extract_text(self, label=None, color=None):
         if color:
-            self.rectangle_color.set(color)
-            self.master.update_idletasks()
+            self.rectangle_color=color
+            self.rectangle_label = label
         if self.pdf is None:
             return
         if not self.canvas.draw:
