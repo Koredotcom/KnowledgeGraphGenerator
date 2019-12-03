@@ -2,10 +2,6 @@ import argparse
 from kg_export.json_to_csv import JsonToCsv
 from kg_export.csv_to_json import CsvToJson
 
-def validate_file(file_type):
-    pass
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_file_path', help='path for input file')
@@ -16,9 +12,11 @@ if __name__ == '__main__':
     args['request_type'] = input_arguments.type
     args['input_file_path'] = input_arguments.input_file_path
     args['output_file_path'] = input_arguments.output_file_path
-    if args.get('request_type', '') == 'json_to_csv':
+    if args.get('request_type', '').strip() == 'json_to_csv':
         parser = JsonToCsv()
         parser.parse(args['input_file_path'], args['output_file_path'])
-    elif args.get('request_type', '') == 'csv_to_json':
+    elif args.get('request_type', '').strip() == 'csv_to_json':
         parser = CsvToJson()
         parser.parse(args['input_file_path'], args['output_file_path'])
+    else:
+        print('invalid request_type')

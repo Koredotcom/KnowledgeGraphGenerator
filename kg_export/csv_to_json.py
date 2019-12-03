@@ -39,7 +39,7 @@ class CsvToJson(object):
                 if current_container is not None:
                     current_container.append(row)
                 else:
-                    print('container not found')
+                    print('container not found with name - {}'.format(row[0].lower()))
         if not is_section_present:
             print('No valid sections present in faq')
 
@@ -267,7 +267,43 @@ class CsvToJson(object):
             result.append(path_obj)
         return result
 
-    def write_json_file(self, file_content, file_path):
+    def parse_trait_groups(self):
+        result = list()
+        current_trait_group = None
+        current_trait = dict()
+        for csv_row in self.trait_group_data:
+            if csv_row[3]:
+                if current_trait_group:
+                    if current_trait:
+                        current_trait_group['traits'][current_trait.get('displayName')] = copy.deepcopy(current_trait)
+                        current_trait = dict()
+                    else:
+                        print('trait not found for trait group - {}'.format(current_trait_group['groupName']))
+                    result.append(copy.deepcopy(current_trait_group))
+                current_trait_group = dict()
+                current_trait_group['language'] = csv_row[2]
+                current_trait_group['groupName'] = csv_row[3]
+                current_trait_group['matchStrategy'] = csv_row[4]
+                current_trait_group['scoreThreshold'] = csv_row[5]
+                current_trait_group['traits'] = dict()
+
+            if csv_row[6] and current_trait_group:
+                if current_trait:
+                    current_trait_group['traits'][current_trait.get('displayName')] = copy.deepcopy(current_trait)
+                current_trait = dict()
+                current_trait['displayName'] = csv_row[6]
+                current_trait['data'] = []
+            if csv_row[7]:
+                current_trait['data'].append(csv_row[7])
+        else:
+            if current_trait_group and current_trait:
+                current_trait_group['traits'][current_trait.get('displayName')] = copy.deepcopy(current_trait)
+                result.append(copy.deepcopy(current_trait_group))
+
+        return result
+
+    @staticmethod
+    def write_json_file(file_content, file_path):
         with open(file_path, 'w') as fp:
             json.dump(file_content, fp, indent=2)
         return True
@@ -281,27 +317,20 @@ class CsvToJson(object):
         kg_param_payload = self.parse_kg_params()
         faq_payload = self.parse_faqs()
         unmapped_path = self.parse_unmapped_path()
+        trait_groups = self.parse_trait_groups()
         json_export['faqs'] = faq_payload
         json_export['synonyms'] = synonym_payload
         json_export['kgParams'] = kg_param_payload
         json_export['nodes'] = node_payload
         json_export['faqtags'] = tag_payload
         json_export['unmappedpath'] = unmapped_path
+        json_export['traitGroups'] = trait_groups
         self.write_json_file(json_export, output_file_path)
         print('New json generated in {}'.format(output_file_path))
-    # def compare_json(self):
-    #     from deepdiff import DeepDiff
-    #     with open('a.json', 'r') as fp:
-    #         a = json.load(fp)
-    #     with open('b.json', 'r') as fp:
-    #         b = json.load(fp)
-    #     diff = DeepDiff(b, a, ignore_order=True, report_repetition=True)
-    #     with open('diff.json', 'w') as fp:
-    #         json.dump(json.dumps(diff), fp, indent=2)
 
 
 if __name__ == '__main__':
-    file_path = '/home/satyaaditya/Desktop/new_sv.csv'
+    file_path = 'eexport.csv'
     parser = CsvToJson()
     parser.parse(file_path, 'faq.json')
     # parser.compare_json()

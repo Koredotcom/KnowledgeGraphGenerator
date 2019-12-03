@@ -144,10 +144,8 @@ class JsonToCsv(object):
         print('parsing FAQs ... ')
         result = list()
         result.append(FAQ_HEADER)
-        i = 0
         for faq_obj in faq_payload:
             result.extend(self.create_csv_faq_row(faq_obj))
-            i += 1
         result.extend([[''] * SECTION_DELIMITING_COUNT])
         return result
 
@@ -210,8 +208,8 @@ class JsonToCsv(object):
     def parse_kg_params(kg_params):
         print('parsing stopwords ...')
         result = list()
+        result.append(KG_PARAMS_HEADER)
         if kg_params:
-            result.append(KG_PARAMS_HEADER)
             params_payload = list()
             params_payload.extend([''] * 2)
             for key in kg_params:
@@ -228,8 +226,7 @@ class JsonToCsv(object):
     def parse_trait_groups(self, trait_groups):
         print('parsing trait groups ...')
         result = []
-        if trait_groups:
-            result.append(TRAIT_GROUP_HEADER)
+        result.append(TRAIT_GROUP_HEADER)
         for group in trait_groups:
             current_row = [''] * 8
             current_row[2] = group.get('language')
@@ -242,8 +239,6 @@ class JsonToCsv(object):
                     current_row[7] = data_item
                     result.append(copy.deepcopy(current_row))
                     current_row = [''] * 8
-                else:
-                    result.append(copy.deepcopy(current_row))
 
                 current_row = [''] * 8
 
@@ -280,9 +275,9 @@ class JsonToCsv(object):
 
 
 if __name__ == '__main__':
-    file_path = '/home/satyaaditya/Downloads/test_nissan -  Knowledge Collection (1).json'
+    file_path = '/home/satyaaditya/Downloads/consistency -  Knowledge Collection.json'
     # file_path = '/home/satyaaditya/Downloads/trim.json'
     # file_path = '/home/satyaaditya/Downloads/consistency -  Knowledge Collection.json'
     # file_path = '/home/satyaaditya/Downloads/airbus csv -  Knowledge Collection (1).json'
     json_reader = JsonToCsv()
-    json_reader.parse(file_path, '/home/satyaaditya/Desktop/new_sv.csv')
+    json_reader.parse(file_path, 'eexport.csv')
