@@ -181,7 +181,7 @@ class CsvToJson(object):
         current_ques_obj = None
         result = list()
         for faq_row in self.faq_data:
-
+            faq_row = list(reversed(tuple(dropwhile(lambda t: t is '', reversed(faq_row)))))
             current_row = dict(enumerate(faq_row))
             if current_row.get(REF_ID_INDEX, ''):
                 current_ques_obj = dict()
@@ -288,7 +288,7 @@ class CsvToJson(object):
         json_export['faqtags'] = tag_payload
         json_export['unmappedpath'] = unmapped_path
         self.write_json_file(json_export, output_file_path)
-        print('New json generated with filename KnowledgeGraph_export.json in current working directory')
+        print('New json generated in {}'.format(output_file_path))
     # def compare_json(self):
     #     from deepdiff import DeepDiff
     #     with open('a.json', 'r') as fp:
@@ -301,7 +301,7 @@ class CsvToJson(object):
 
 
 if __name__ == '__main__':
-    file_path = '/home/satyaaditya/work/kore/FAQBot/kg_export/export.csv'
+    file_path = '/home/satyaaditya/Desktop/new_sv.csv'
     parser = CsvToJson()
     parser.parse(file_path, 'faq.json')
     # parser.compare_json()

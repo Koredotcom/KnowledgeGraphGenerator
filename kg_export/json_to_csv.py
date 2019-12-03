@@ -273,7 +273,7 @@ class JsonToCsv(object):
         csv_file_content.extend(trait_groups)
 
         self.write_csv(csv_file_content, output_file_path)
-        print('New csv created with filename export.csv in current working directory')
+        print('New csv created in {}'.format(output_file_path))
 
 
 if __name__ == '__main__':
