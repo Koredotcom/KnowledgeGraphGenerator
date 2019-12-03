@@ -80,7 +80,7 @@ output_file_path option in the command specifies the path of output file, that w
               Alternate questions will come in next row to primary question but not in same row, as properties like tags etc... varies from question to question, they need to be in new row
        </li>
        <li>
-              ID's auto filled in CSV through existing json should be modified
+              ID's auto filled in CSV through existing json shouldn't be modified
        </li>
        <li>
               Only the first section in CSV (FAQ section) is mandatory. Remaining sections are optional and needed only based on use case
