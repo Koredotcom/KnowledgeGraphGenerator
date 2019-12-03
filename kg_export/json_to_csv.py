@@ -214,6 +214,9 @@ class JsonToCsv(object):
             result.append(KG_PARAMS_HEADER)
             params_payload = list()
             params_payload.extend([''] * 2)
+            for key in kg_params:
+                if not kg_params[key]:
+                    kg_params[key] = ''
             stopwords = DEFAULT_DELIMITER.join(kg_params.get('stopWords', ''))
             language_code = kg_params.get('lang')
             params_payload.append(language_code)
@@ -277,9 +280,9 @@ class JsonToCsv(object):
 
 
 if __name__ == '__main__':
-    file_path = '/home/satyaaditya/Downloads/hiui -  Knowledge Collection.json'
+    file_path = '/home/satyaaditya/Downloads/test_nissan -  Knowledge Collection (1).json'
     # file_path = '/home/satyaaditya/Downloads/trim.json'
     # file_path = '/home/satyaaditya/Downloads/consistency -  Knowledge Collection.json'
     # file_path = '/home/satyaaditya/Downloads/airbus csv -  Knowledge Collection (1).json'
     json_reader = JsonToCsv()
-    json_reader.parse(file_path)
+    json_reader.parse(file_path, '/home/satyaaditya/Desktop/new_sv.csv')
