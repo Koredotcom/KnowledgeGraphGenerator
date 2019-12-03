@@ -2,6 +2,17 @@
 
 # KnowledgeGraph ExportParser
 
+[Overview](#Overview)<br>
+[Prerequisites](#Prerequisites)<br>
+[Configuration Steps](#Configuration-Steps)<br>
+[Run KnowledgeGraph ExportParser](#Run-KnowledgeGraph-ExportParser)<br>
+[Command Options](#Command-Options)<br>
+[Option: type](#type)<br>
+[Option: input_file_path](#input-file-path)<br>
+[Option: output_file_path](#output-file-path)<br>
+[Things to consider](#Things-to-consider)<br>
+
+
 ## Overview
 kore.ai KnowledgeGraph ExportParser is custom utility to generate a CSV from KnowledgeGraph json_export file. Unlike the current csv_export format, the CSV generated from this utility provides all the features that are currently present in KnowledgeGraph. User must again convert the custom CSV to KnowledgeGraph supported json_format using the same tool and then import the generated json_file in bot
 
