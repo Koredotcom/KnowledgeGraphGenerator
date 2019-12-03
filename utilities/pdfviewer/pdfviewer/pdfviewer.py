@@ -101,19 +101,19 @@ class PDFViewer(Frame):
         labels_frame = Frame(tool_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         labels_frame.grid(row=4, column=0)
 
-        HoverButton(tools, text="Heading", command=lambda: self._extract_text("is_heading", "firebrick1"),
+        HoverButton(labels_frame, text="Heading", command=lambda: self._extract_text("is_heading", "firebrick1"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="firebrick1").pack(pady=2)
-        HoverButton(tools, text="Paragraph", command=lambda: self._extract_text("is_paragraph_end", "SeaGreen1"),
+        HoverButton(labels_frame, text="Paragraph", command=lambda: self._extract_text("is_paragraph_end", "SeaGreen1"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="SeaGreen1").pack(pady=2)
-        HoverButton(tools, text="Title", command=lambda: self._extract_text("is_doc_title", "DeepSkyBlue2"),
+        HoverButton(labels_frame, text="Title", command=lambda: self._extract_text("is_doc_title", "DeepSkyBlue2"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="DeepSkyBlue2").pack(pady=2)
-        HoverButton(tools, text="Header", command=lambda: self._extract_text("is_header", "Cyan4"),
+        HoverButton(labels_frame, text="Header", command=lambda: self._extract_text("is_header", "Cyan4"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="Cyan4").pack(pady=2)
-        HoverButton(tools, text="Footer", command=lambda: self._extract_text("is_footer", "honeydew4"),
+        HoverButton(labels_frame, text="Footer", command=lambda: self._extract_text("is_footer", "honeydew4"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="honeydew4").pack(pady=2)
         # PDF Frame
@@ -185,7 +185,6 @@ class PDFViewer(Frame):
 
         self.master.minsize(height=h, width=w)
         self.master.maxsize(height=hs, width=ws)
-
 
     def _reject(self):
         if self.pdf is None:
@@ -323,9 +322,47 @@ class PDFViewer(Frame):
         image = image.annotated.rotate(self.rotate)
         self.canvas.update_image(image)
 
+    def intersection_area(self, word1, word2):
+        i_x = min(word2[2], word1["x1"]) - max(word1["x0"], word2[0])
+        i_y = min(word2[3], word1["bottom"]) - max(word1["top"], word2[1])
+        return i_x * i_y
+
+    def _extract_text_coords(self):
+        self.canvas.draw = False
+        self.canvas.configure(cursor='')
+        rect = self.canvas.get_rect()
+        if rect is None:
+            return
+        rect = self._reproject_bbox(rect)
+        page = self.pdf.pages[self.pageidx - 1]
+        words = page.extract_words()
+        for word in words:
+            if not (word["x1"] < rect[0] or word["x0"] > rect[2] or word["top"] > rect[3] or word["bottom"] < rect[1]):
+                word["intersect"] = self.intersection_area(word, rect)
+            else:
+                word["intersect"] = 0
+        max_intersect = max(words, key=lambda x: x['intersect'])
+        words_in_rect = [word for word in words if
+                     word["top"] == max_intersect["top"] and word["bottom"] == max_intersect["bottom"]]
+        # print("intersected words", [x["text"] for x in words_in_rect])
+        pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
+                  page.height - words_in_rect[-1]["top"])
+        for idx, pdf_attribute in enumerate(self.pdf_attributes):
+            if pdf_attribute[0] == self.pageidx:
+                min_dim = pdf_attribute[-1][3]
+                match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 20, int(pl_dim[x]) + 20) for x in range(4)])
+                if all(match):
+                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx])
+                    break
+            if pdf_attribute[6] > self.pageidx:
+                break
+
+        return [words_in_rect[0]["x0"], words_in_rect[0]["top"], words_in_rect[-1]["x1"],
+                                                        words_in_rect[0]["bottom"]]
+
     def _extract_text(self, label=None, color=None):
         if color:
-            self.rectangle_color=color
+            self.rectangle_color = color
             self.rectangle_label = label
         if self.pdf is None:
             return
@@ -333,35 +370,6 @@ class PDFViewer(Frame):
             self.canvas.draw = True
             self.canvas.configure(cursor='cross')
             return
-        self.canvas.draw = False
-        self.canvas.configure(cursor='')
-        rect = self.canvas.get_rect()
-        if rect is None:
-            return
-        self.canvas.rect = None
-        rect = self._reproject_bbox(rect)
-        page = self.pdf.pages[self.pageidx - 1]
-        words = page.extract_words()
-        words_in_rect = []
-        # print("rect : {}".format(rect))
-        for word in words:
-            # print("word : {}".format(word))
-            if word['top'] >= rect[1] and word["bottom"] <= rect[3] and word['x0'] > rect[0] and word['x1'] < rect[2]:
-                words_in_rect.append(word)
-        if not words_in_rect:
-            # print("No words in rectangle box")
-            return
-        pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
-                  page.height - words_in_rect[-1]["top"])
-        for idx, pdf_attribute in enumerate(self.pdf_attributes):
-            if pdf_attribute[0] == self.pageidx:
-                min_dim = pdf_attribute[-1][3]
-                match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 10, int(pl_dim[x]) + 10) for x in range(4)])
-                if all(match):
-                    self.pdf_to_csv.append([idx, label, self.pageidx])
-                    break
-            if pdf_attribute[6] > self.pageidx:
-                break
 
     def _reproject_bbox(self, bbox):
         bbox = [self.page.decimalize(x) for x in bbox]
@@ -472,7 +480,7 @@ class PDFViewer(Frame):
         if not filepath or filepath == '':
             # self._clear()
             return
-        with open(filepath, "w", newline="") as f:
+        with open(filepath, "w", newline="", encoding="utf-8") as f:
             self.update_in_file_attributes(1)
             writer = csv.writer(f)
             writer.writerow(self.labels)

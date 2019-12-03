@@ -81,13 +81,14 @@ class DisplayCanvas(Frame):
 
     def on_button_release(self, event):
         if self.rect:
-            self.viewer._extract_text(label=self.viewer.rectangle_label, color=self.viewer.rectangle_color)
-            cur_x = self.canvas.canvasx(event.x)
-            cur_y = self.canvas.canvasy(event.y)
-            rectangle = [self.rect, self.start_x, self.start_y, cur_x, cur_y, self.viewer.rectangle_color]
+            coords = self.viewer._extract_text_coords()
+            coords = self.get_rect_coords(coords)
+            self.canvas.coords(self.rect, coords[0], coords[1], coords[2], coords[3])
+            rectangle = [self.rect, coords[0], coords[1], coords[2], coords[3], self.viewer.rectangle_color]
             current_page = self.viewer.pageidx
             self.rectangles[current_page] = self.rectangles.get(current_page, [])
             self.rectangles[current_page].append(rectangle)
+            self.rect = None
 
     def draw_rectangles(self, current_page):
         if current_page in self.rectangles:
@@ -129,6 +130,25 @@ class DisplayCanvas(Frame):
         if self.rect:
             rect = self.canvas.coords(self.rect)
             rect = [rect[0] + abs(minx), rect[1] + abs(miny), rect[2] + abs(minx), rect[3] + abs(miny)]
+            return rect
+        else:
+            return None
+
+    def get_rect_coords(self, rect):
+        x0, y0, x1, y1 = rect
+        page = self.viewer.page
+        px0, py0 = page.page.bbox[:2]
+        rx0, ry0 = page.root.bbox[:2]
+        _x0 = float((x0 * page.scale) - px0 + rx0)
+        _y0 = float((y0 * page.scale) - py0 + px0)
+        _x1 = float((x1 * page.scale) - px0 + rx0)
+        _y1 = float((y1 * page.scale) - py0 + px0)
+        w, h = self.pil_image.size
+        x0, y0 = self.canvas.coords(self.image_obj)
+        minx = (x0 - w) / 2.0
+        miny = (y0 - h) / 2.0
+        if rect:
+            rect = [_x0 - abs(minx), _y0 - abs(miny), _x1 - abs(minx), _y1 - abs(miny)]
             return rect
         else:
             return None
