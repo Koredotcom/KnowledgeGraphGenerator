@@ -247,16 +247,16 @@ class JsonToCsv(object):
         return result
 
     @staticmethod
-    def write_csv(file_content, file_loc='kg_export/export.csv'):
+    def write_csv(file_content, file_loc):
         with open(file_loc, 'w') as fp:
             csv_writer = csv.writer(fp)
             for row in file_content:
                 csv_writer.writerow(row)
         print('csv generated')
 
-    def parse(self, file_path):
+    def parse(self, input_file_path, output_file_path):
         csv_file_content = list()
-        file_content = self.read_json_file(file_path)
+        file_content = self.read_json_file(input_file_path)
         self.extract_root_node(file_content.get('nodes', []))
         faqs = self.parse_faqs(file_content.get('faqs', []) + file_content.get('unmappedpath', []))
         nodes = self.parse_nodes(file_content.get('nodes', []))
@@ -272,7 +272,7 @@ class JsonToCsv(object):
         csv_file_content.extend(kg_params)
         csv_file_content.extend(trait_groups)
 
-        self.write_csv(csv_file_content)
+        self.write_csv(csv_file_content, output_file_path)
         print('New csv created with filename export.csv in current working directory')
 
 

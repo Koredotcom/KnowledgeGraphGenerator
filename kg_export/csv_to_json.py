@@ -272,9 +272,9 @@ class CsvToJson(object):
             json.dump(file_content, fp, indent=2)
         return True
 
-    def parse(self, file_path):
+    def parse(self, input_file_path, output_file_path):
         json_export = dict()
-        csv_data = self.read_csv_file(file_path)
+        csv_data = self.read_csv_file(input_file_path)
         self.group_csv_data(csv_data)
         node_payload, tag_payload = self.parse_nodes()
         synonym_payload = self.parse_global_syn()
@@ -287,7 +287,7 @@ class CsvToJson(object):
         json_export['nodes'] = node_payload
         json_export['faqtags'] = tag_payload
         json_export['unmappedpath'] = unmapped_path
-        self.write_json_file(json_export, OUTPUT_JSON_FILE_PATH)
+        self.write_json_file(json_export, output_file_path)
         print('New json generated with filename KnowledgeGraph_export.json in current working directory')
     # def compare_json(self):
     #     from deepdiff import DeepDiff
@@ -303,5 +303,5 @@ class CsvToJson(object):
 if __name__ == '__main__':
     file_path = '/home/satyaaditya/work/kore/FAQBot/kg_export/export.csv'
     parser = CsvToJson()
-    parser.parse(file_path)
+    parser.parse(file_path, 'faq.json')
     # parser.compare_json()
