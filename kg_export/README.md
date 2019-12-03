@@ -7,9 +7,6 @@
 [Configuration Steps](#Configuration-Steps)<br>
 [Run KnowledgeGraph ExportParser](#Run-KnowledgeGraph-ExportParser)<br>
 [Command Options](#Command-Options)<br>
-[Option: type](#type)<br>
-[Option: input_file_path](#input-file-path)<br>
-[Option: output_file_path](#output-file-path)<br>
 [Things to consider](#Things-to-consider)<br>
 
 
