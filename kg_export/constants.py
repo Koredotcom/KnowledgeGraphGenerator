@@ -21,7 +21,7 @@ SYNONYMS_HEADER = ['Synonyms', '', 'phrase', 'Synonyms']
 KG_PARAMS_HEADER = ['Kg params', '', 'language', 'Stopwords']
 TRAIT_GROUP_HEADER = ['Traits', '', 'lang', 'GroupName', 'MatchStrategy', 'ScoreThreshold', 'TraitName', 'Training Data']
 
-''' column numbers for sections used in csv '''
+''' column numbers for FAQ section items in csv '''
 SECTION_DELIMITING_COUNT = 2
 QUES_ID_COL_NO = 1
 TERM_PATH_COL_NO = 2
@@ -31,16 +31,25 @@ TAG_PATH_COL_NO = 5
 ANS_COL_NO = 6
 MIN_COL_COUNT = 20
 
+''' column numbers for Nodes section items in csv '''
 TERM_PRECON_INDEX = 4
 TERM_CONTEXT_INDEX = 5
 TERM_TRAIT_INDEX = 6
 TERM_CONCEPT_INDEX = 7
-REF_ID_INDEX = 1
-QUESTION_INDEX = 3
 
+''' column numbers for global synonyms section items in csv '''
 SYNONYM_PHRASE_INDEX = 2
 SYNONYM_VALUE_INDEX = 3
+
+''' column numbers for kg params section items in csv '''
 KG_PARAM_LANG_INDEX = 2
 KG_PARAM_STOPWORDS_INDEX = 3
 
 VALID_SECTIONS = ['faq', 'node', 'synonyms', 'kg params', 'traits']
+
+''' logger constants '''
+ERROR = 'error'
+DEBUG = 'debug'
+CRITICAL = 'critical'
+INFO = 'info'
+WARNING = 'warning'
