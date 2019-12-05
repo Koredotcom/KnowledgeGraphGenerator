@@ -7,7 +7,7 @@ from collections import defaultdict
 from kg_export.constants import *
 from itertools import dropwhile
 from log.Logger import Logger
-from kg_export.utils import log_message
+from kg_export.utils import log_message, get_index
 
 logger = Logger()
 
@@ -94,16 +94,16 @@ class CsvToJson(object):
                             self.tag_trait_dict[ref_id + TRAIT_KEY_DELIMITER + terms[0]] = traits
                             tag_payload[ref_id].append(copy.deepcopy(term_object))
                         else:
-                            logger.error('unique ques id not present for tag: {} at row number- {}. Tag discarded'.format(terms[0], self.get_index(row, self.csv_data)))
+                            logger.error('unique ques id not present for tag: {} at row number- {}. Tag discarded'.format(terms[0], get_index(row, self.csv_data)))
                     elif is_tag == 'N':
                         term_object['terms'] = terms[::-1]
                         self.node_trait_dict[DEFAULT_DELIMITER.join(terms)] = traits
                         node_payload.append(copy.deepcopy(term_object))
                 else:
-                    logger.error('Warning: No nodes present at row number - {}'.format(self.get_index(row, self.csv_data)))
+                    logger.error('Warning: No nodes present at row number - {}'.format(get_index(row, self.csv_data)))
 
             except Exception:
-                row_index = self.get_index(row, self.csv_data)
+                row_index = get_index(row, self.csv_data)
                 log_message('Error while processing nodes section from row - {}'.format(row_index), ERROR)
                 logger.error(traceback.format_exc())
                 raise Exception
@@ -271,14 +271,14 @@ class CsvToJson(object):
                         current_ques_obj['alternateAnswers'].append(answer)
 
             except Exception:
-                row_number = self.get_index(faq_row, self.csv_data)
+                row_number = get_index(faq_row, self.csv_data)
                 log_message('Error while processing FAQs section at row - {}'.format(row_number), ERROR)
                 logger.error(traceback.format_exc())
                 raise Exception
 
         return result
 
-    def parse_global_syn(self):
+    def parse_kg_synonyms(self):
         log_message('Parsing global synonyms ...')
         result = dict()
         for row in self.global_syn_data:
@@ -289,7 +289,7 @@ class CsvToJson(object):
                     synonyms = current_row.get(3).split(DEFAULT_DELIMITER)
                     result[phrase] = synonyms
             except Exception:
-                row_number = self.get_index(row, self.csv_data)
+                row_number = get_index(row, self.csv_data)
                 log_message('Error while processing synonyms section row - {}'.format(row_number), ERROR)
                 logger.error(traceback.format_exc())
                 raise Exception
@@ -372,7 +372,7 @@ class CsvToJson(object):
             grouping_status = self.group_csv_data(csv_data)
             if grouping_status:
                 node_payload, tag_payload = self.parse_nodes()
-                synonym_payload = self.parse_global_syn()
+                synonym_payload = self.parse_kg_synonyms()
                 kg_param_payload = self.parse_kg_params()
                 faq_payload = self.parse_faqs()
                 unmapped_path = self.parse_unmapped_path()

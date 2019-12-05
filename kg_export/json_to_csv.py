@@ -211,7 +211,7 @@ class JsonToCsv(object):
         return result
 
     @staticmethod
-    def parse_global_synonyms(global_syn_payload):
+    def parse_kg_synonyms(global_syn_payload):
         log_message('Parsing global synonyms ...')
         result = list()
         result.append(SYNONYMS_HEADER)
@@ -305,14 +305,14 @@ class JsonToCsv(object):
             faqs = self.parse_faqs(file_content.get('faqs', []) + file_content.get('unmappedpath', []))
             nodes = self.parse_nodes(file_content.get('nodes', []))
             tags = self.parse_tags(file_content.get('faqtags', []))
-            global_synonyms = self.parse_global_synonyms(file_content.get('synonyms', []))
+            kg_synonyms = self.parse_kg_synonyms(file_content.get('synonyms', []))
             kg_params = self.parse_kg_params(file_content.get('kgParams', {}))
             trait_groups = self.parse_trait_groups(file_content.get('traitGroups', {}))
 
             csv_file_content.extend(faqs)
             csv_file_content.extend(nodes)
             csv_file_content.extend(tags)
-            csv_file_content.extend(global_synonyms)
+            csv_file_content.extend(kg_synonyms)
             csv_file_content.extend(kg_params)
             csv_file_content.extend(trait_groups)
 
