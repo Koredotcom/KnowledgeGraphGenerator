@@ -28,6 +28,11 @@ Run this command from root directory i.e. KnowledgeGraphGenerator directory
 Command - `python kg_export/ExportParser.py --input_file_path 'input_csv_or_json_file.json' --type 'json_to_csv' --output_file_path 'output_csv_or_json_file.csv'
 ` <br>
 
+or a shorter one <br>
+
+Command - `python kg_export/ExportParser.py --i 'input_csv_or_json_file.csv' --t 'csv_to_json' --o 'input_csv_or_json_file.json'`
+
+
 ## Command Options
 
 **Note:: The options which are listed as mandatory should be given along with the command, for options which are regarded as optional, the default values mentioned will be picked**
@@ -38,11 +43,11 @@ Command - `python kg_export/ExportParser.py --input_file_path 'input_csv_or_json
               <td> Description </td>
        <tr>
        <tr>
-              <td> --input_file_path </td>
+              <td> --input_file_path or --i</td>
               <td> Input file location, csv/json based on request type</td>
        </tr>  
        <tr>
-              <td> --type </td>
+              <td> --type or --t</td>
               <td> The type of input file 
                      <ol>
                             <li>json_to_csv</li>
@@ -51,7 +56,7 @@ Command - `python kg_export/ExportParser.py --input_file_path 'input_csv_or_json
               </td>
        </tr>
        <tr>
-         <td> --output_file_path </td>
+         <td> --output_file_path or --o</td>
               <td> output file location json/csv based on request type </td>
        </tr>
 </table>
