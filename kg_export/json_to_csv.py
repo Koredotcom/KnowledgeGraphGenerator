@@ -165,6 +165,7 @@ class JsonToCsv(object):
             try:
                 row_body = ['', '']
                 terms = node_obj.get('terms', [])[::-1]
+                terms = list(map(str.strip, terms))
                 node_string = ','.join(terms)
 
                 row_body.append(node_string)
