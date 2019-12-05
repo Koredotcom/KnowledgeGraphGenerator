@@ -199,7 +199,7 @@ def clean_string(string):
 
 pdf_attributes = extract_attributes(sys.argv[1],[])
 pdf_attributes = clean_extracted_pdf(pdf_attributes)
-with open('pdf_attributes.csv', 'w') as f:
+with open('pdf_attributes.csv', 'w', newline='') as f:
     writer = csv.writer(f)
     all_rows = []
 #    first_row = ['page_no','line','is_heading','is_paragraph_end','pdf_attribute']
