@@ -216,6 +216,8 @@ class PDFViewer(Frame):
             self.canvas.rectangles = {}
         self.canvas.reset()
         self._update_page()
+        for attr in self.pdf_to_csv:
+            attr[-1] = 0
         self.update_in_file_attributes(0)
 
     def _zoom_in(self):
@@ -343,7 +345,7 @@ class PDFViewer(Frame):
                 word["intersect"] = 0
         max_intersect = max(words, key=lambda x: x['intersect'])
         words_in_rect = [word for word in words if
-                     word["top"] == max_intersect["top"] and word["bottom"] == max_intersect["bottom"]]
+                         word["top"] == max_intersect["top"] and word["bottom"] == max_intersect["bottom"]]
         # print("intersected words", [x["text"] for x in words_in_rect])
         pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
                   page.height - words_in_rect[-1]["top"])
@@ -352,13 +354,13 @@ class PDFViewer(Frame):
                 min_dim = pdf_attribute[-1][3]
                 match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 20, int(pl_dim[x]) + 20) for x in range(4)])
                 if all(match):
-                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx])
+                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx, self.canvas.rect_tag, '1'])
                     break
+
             if pdf_attribute[6] > self.pageidx:
                 break
-
         return [words_in_rect[0]["x0"], words_in_rect[0]["top"], words_in_rect[-1]["x1"],
-                                                        words_in_rect[0]["bottom"]]
+                words_in_rect[0]["bottom"]]
 
     def _extract_text(self, label=None, color=None):
         if color:
@@ -465,16 +467,16 @@ class PDFViewer(Frame):
         self._load_file()
 
     def update_in_file_attributes(self, status):
-        for idx, label, pg_no in self.pdf_to_csv:
+        for idx, label, pg_no, rect_tag, status_csv in self.pdf_to_csv:
             if self.pdf_attributes[idx][0] == pg_no:
-                self.pdf_attributes[idx][self.labels.index(label)] = status
+                self.pdf_attributes[idx][self.labels.index(label)] = status_csv
         if not status:
             # remove selected attributes from main attributes
             self.pdf_to_csv = []
 
     def _to_file(self):
         filepath = filedialog.asksaveasfilename(initialdir=os.getcwd(), title="Save files",
-                                                initialfile="pdf_attributes",
+                                                initialfile="pdf_extraction",
                                                 defaultextension=".csv",
                                                 filetypes=[('csv files', '.csv'), ('text files', '.txt')])
         if not filepath or filepath == '':
