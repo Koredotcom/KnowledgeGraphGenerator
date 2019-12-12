@@ -8,19 +8,25 @@ class DisplayCanvas(Frame):
     def __init__(self, master, page_height, page_width, **kw):
         Frame.__init__(self, master, **kw)
         self.x = self.y = 0
+        self.canvas = Canvas(master, height=page_height, width=page_width, bg='#404040', highlightbackground='#353535',
+                             relief=SUNKEN, highlightthickness=0)
 
-        self.canvas = Canvas(self, height=page_height, width=page_width, bg='#404040', highlightbackground='#353535')
-        self.sbarv = Scrollbar(self, orient=VERTICAL, bg='#404040', highlightbackground='#353535')
-        self.sbarh = Scrollbar(self, orient=HORIZONTAL, bg='#404040', highlightbackground='#353535')
+        self.sbarv = Scrollbar(self.master, orient=VERTICAL, bg='#404040', highlightbackground='#353535')
+        self.sbarh = Scrollbar(self.master, orient=HORIZONTAL, bg='#404040', highlightbackground='#353535')
         self.sbarv.config(command=self.canvas.yview)
         self.sbarh.config(command=self.canvas.xview)
 
         self.canvas.config(yscrollcommand=self.sbarv.set)
         self.canvas.config(xscrollcommand=self.sbarh.set)
 
-        self.canvas.grid(row=0, column=0, sticky=N + S + E + W)
-        self.sbarv.grid(row=0, column=1, stick=N + S)
-        self.sbarh.grid(row=1, column=0, sticky=E + W)
+        self.canvas.grid(row=0, column=0, sticky='nsew')
+        self.sbarv.grid(row=0, column=1, stick='ns')
+        self.sbarh.grid(row=1, column=0, sticky='ew')
+
+        self.canvas.rowconfigure(0, weight=1)
+        self.canvas.rowconfigure(1, weight=1)
+        self.canvas.columnconfigure(1, weight=1)
+        # self.canvas.pack(fill=BOTH,expand=True)
 
         top = self.winfo_toplevel()
         top.bind('<Left>', self.on_left)
@@ -32,6 +38,7 @@ class DisplayCanvas(Frame):
         self.canvas.bind("<B1-Motion>", self.on_move_press)
         self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
         self.canvas.bind("<Motion>", self.on_move)
+        self.canvas.bind("<Configure>", self.on_resize)
 
         self.rect = None
         self.image = None
@@ -51,6 +58,9 @@ class DisplayCanvas(Frame):
         self.btntag_list = {}
 
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
+        self.canvas.addtag_all("all")
+        self.width = self.master.winfo_screenwidth()
+        self.height = self.master.winfo_screenheight()
 
     def on_button_press(self, event, rectangle=False):
         if rectangle:
@@ -219,16 +229,27 @@ class DisplayCanvas(Frame):
         y_coord = widget.canvasy(event.y)
         # print("x,y", x_coord, y_coord)
         # print(self.rectangles)
-
         if page_id in self.rectangles:
             for rect in self.rectangles[page_id]:
                 if y_coord in range(int(rect[2]), int(rect[4])):
                     self.rect_id = rect[0]
                     self.quit_binder(rect[0], rect[3], rect[2])
-
                     break
                 if rect[0] in self.btntag_list:
                     # print(self.btntag_list[rect[0]], "buttaglist")
-
                     self.canvas.delete(self.btntag_list[rect[0]])
                     self.btntag_list.pop(rect[0])
+
+    def on_resize(self, event):
+        # determine the ratio of old width/height to new width/height
+        wscale = float(event.width) / self.width
+        hscale = float(event.height) / self.height
+        self.width = event.width
+        self.height = event.height
+        # print(event.width, event.height,'on resize')
+
+        # resize the canvas
+        self.canvas.config(width=self.width, height=self.height)
+        # rescale all the objects tagged with the "all" tag
+        self.canvas.scale("all", 0, 0, wscale, hscale)
+        return
