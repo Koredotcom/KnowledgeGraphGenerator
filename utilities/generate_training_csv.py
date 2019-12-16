@@ -112,10 +112,18 @@ def extract_attributes(path, toc):
                     possible_heading = False
                     prev_fontname = None
                     all_same_font = True
+                    fontname_histogram = dict()
                     for c in obj:
                         if not isinstance(c, LTChar):
                             continue
                         fontname = c.fontname
+
+                        if fontname in fontname_histogram:
+                            f = fontname_histogram[fontname]
+                            fontname_histogram[fontname] = f+1
+                        else:
+                            fontname_histogram[fontname] = 1
+
                         if prev_fontname is not None and prev_fontname != fontname:
                             all_same_font = False
                         prev_fontname = fontname
@@ -131,8 +139,9 @@ def extract_attributes(path, toc):
                         obj.bbox = None
                         possible_heading = None
                     if (not is_section_start_temp) or clean_string(obj.get_text().strip()) != clean_string(page_section_map[int(page.pageid - 1)].strip()):
-                       final_result_element = (obj.get_text().strip(), fontname, fontsize, obj.bbox, possible_heading, is_section_start, page.pageid, page.height, page.width)
-                       final_result.append(final_result_element)
+                        fontname = max(fontname_histogram, key=fontname_histogram.get)
+                        final_result_element = (obj.get_text().strip(), fontname, fontsize, obj.bbox, possible_heading, is_section_start, page.pageid, page.height, page.width)
+                        final_result.append(final_result_element)
     return final_result
 
 def compare_text_with_top_level_headings(text, toc):
@@ -214,7 +223,11 @@ with open('pdf_attributes.csv', 'w', newline='') as f:
             for k in range(0,len(first_row) - 3):
                 row.append(0)
             row.append(str(attr))
-            all_rows.append(row)
+            if len(sys.argv) > 2:
+                if int(row[0]) <= int(sys.argv[2]):
+                    all_rows.append(row)
+            else:
+                all_rows.append(row)
         except:
             continue
     writer.writerows(all_rows)
