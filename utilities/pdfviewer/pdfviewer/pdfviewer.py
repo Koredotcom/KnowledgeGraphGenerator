@@ -13,6 +13,7 @@ from pdfviewer.menubox import MenuBox
 from pdfviewer.labelbox import LabelBox
 from pdfviewer.display_canvas import DisplayCanvas
 from pdfviewer.pdf_attributes import get_pdf_attributes
+from decimal import Decimal
 
 
 class PDFViewer(Frame):
@@ -39,6 +40,11 @@ class PDFViewer(Frame):
         self._init_ui()
         self.width = self.master.winfo_screenwidth()
         self.height = self.master.winfo_screenheight()
+        self.text_font = None
+        self.text_size = None
+        self.text = None
+        self.rect = None
+        self.marked = []
 
     def _init_ui(self):
         ws = self.master.winfo_screenwidth()
@@ -53,9 +59,9 @@ class PDFViewer(Frame):
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-        self.rowconfigure(1,weight=1)
+        self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=0)
-        self.columnconfigure(1,weight=1)
+        self.columnconfigure(1, weight=1)
 
         self.configure(bg=BACKGROUND_COLOR, bd=0)
 
@@ -73,6 +79,7 @@ class PDFViewer(Frame):
         tool_frame.rowconfigure(4, weight=0)
         tool_frame.rowconfigure(5, weight=1)
         tool_frame.rowconfigure(6, weight=0)
+        tool_frame.rowconfigure(7, weight=1)
 
         options = MenuBox(tool_frame, image_path=os.path.join('', 'widgets/options.png'))
         options.grid(row=0, column=0)
@@ -96,7 +103,7 @@ class PDFViewer(Frame):
 
         HoverButton(tool_frame, image_path=os.path.join('', 'widgets/help.png'), command=self._help,
                     width=50, height=50, bg=BACKGROUND_COLOR, bd=0, tool_tip="Help",
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).grid(row=6, column=0, sticky='s')
+                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).grid(row=7, column=0, sticky='s')
 
         labels_frame = Frame(tool_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         labels_frame.grid(row=4, column=0)
@@ -116,13 +123,25 @@ class PDFViewer(Frame):
         HoverButton(labels_frame, text="Footer", command=lambda: self._extract_text("is_footer", "honeydew4"),
                     bg=BACKGROUND_COLOR, bd=0, keep_pressed=True,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="honeydew4").pack(pady=2)
+
+        findall_mb = Menubutton(tool_frame, text='find_all', bg=BACKGROUND_COLOR, bd=0, fg="firebrick1",
+                                highlightthickness=0, activebackground=HIGHLIGHT_COLOR, relief=RAISED)
+        findall_mb.grid(row=6, column=0)
+        findall_mb.menu = Menu(findall_mb, tearoff=0)
+        findall_mb["menu"] = findall_mb.menu
+
+        findall_mb.menu.add_command(label="By font",
+                                    command=self.find_all_by_font)
+        findall_mb.menu.add_command(label="By size",
+                                    command=self.find_all_by_size)
+
         # PDF Frame
         pdf_frame.columnconfigure(0, weight=1)
-        pdf_frame.columnconfigure(1,weight=1)
+        pdf_frame.columnconfigure(1, weight=1)
         pdf_frame.rowconfigure(0, weight=0)
         pdf_frame.rowconfigure(1, weight=1)
 
-        page_tools = Frame(pdf_frame, width=500,height=50,bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
+        page_tools = Frame(pdf_frame, width=500, height=50, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         page_tools.grid(row=0, column=0, sticky='news')
 
         page_tools.rowconfigure(0, weight=1)
@@ -148,10 +167,6 @@ class PDFViewer(Frame):
 
         zoom_frame = Frame(page_tools, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         zoom_frame.grid(row=0, column=3, sticky='ns')
-
-        HoverButton(zoom_frame, image_path=os.path.join('', 'widgets/rotate.png'),
-                    command=self._rotate, bg=BACKGROUND_COLOR, bd=0,
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(side=RIGHT, expand=True)
         HoverButton(zoom_frame, image_path=os.path.join('', 'widgets/fullscreen.png'),
                     command=self._fit_to_screen, bg=BACKGROUND_COLOR, bd=0,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(side=RIGHT, expand=True)
@@ -170,16 +185,16 @@ class PDFViewer(Frame):
         canvas_frame = Frame(pdf_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         canvas_frame.grid(row=1, column=0, sticky='news')
         canvas_frame.rowconfigure(0, weight=1)
-        canvas_frame.rowconfigure(1,weight=1)
+        canvas_frame.rowconfigure(1, weight=1)
         canvas_frame.columnconfigure(0, weight=1)
-        canvas_frame.columnconfigure(1,weight=0)
-        self.canvas = DisplayCanvas(canvas_frame, page_height=hs -68,
+        canvas_frame.columnconfigure(1, weight=0)
+        self.canvas = DisplayCanvas(canvas_frame, page_height=hs - 68,
                                     page_width=ws - 165, highlightthickness=0)
         self.canvas.viewer = self
 
         self.grid(row=0, column=0, sticky='news')
 
-        self.master.minsize(height=10 , width=50)
+        self.master.minsize(height=10, width=50)
         self.master.maxsize(height=hs, width=ws)
 
     def _reject(self):
@@ -210,6 +225,7 @@ class PDFViewer(Frame):
             return
         if redraw:
             self.canvas.rectangles = {}
+        self.marked = []
         self.canvas.reset()
         self._update_page()
         for attr in self.pdf_to_csv:
@@ -325,6 +341,34 @@ class PDFViewer(Frame):
         i_y = min(word2[3], word1["bottom"]) - max(word1["top"], word2[1])
         return i_x * i_y
 
+    def return_match(self, pl_dim, start, end):
+
+        if start <= end:
+            prev_text = ''
+            for idx, pdf_attribute in enumerate(self.pdf_attributes):
+                if pdf_attribute[0] < self.pageidx:
+                    pass
+                elif pdf_attribute[0] == self.pageidx:
+                    min_dim = pdf_attribute[-1][3]
+                    match = set(
+                        [int(min_dim[x]) in range(int(pl_dim[x]) - start, int(pl_dim[x]) + start) for x in range(4)])
+
+                    if all(match):
+                        #print("\nMatch : %s\n" % (pdf_attribute[-1][0]))
+                        return match, pdf_attribute, idx
+                    if self.intersected_word != pdf_attribute[-1][0]:
+                        if prev_text + ' ' + pdf_attribute[-1][0] == self.intersected_word:
+
+                            return [True], pdf_attribute, idx
+                    prev_text = pdf_attribute[-1][0]
+
+
+                else:
+
+                    return self.return_match(pl_dim, start + 1, end)
+
+        return [], None, 0
+
     def _extract_text_coords(self):
         self.canvas.draw = False
         self.master.configure(cursor='')
@@ -342,19 +386,18 @@ class PDFViewer(Frame):
         max_intersect = max(words, key=lambda x: x['intersect'])
         words_in_rect = [word for word in words if
                          word["top"] == max_intersect["top"] and word["bottom"] == max_intersect["bottom"]]
-        # print("intersected words", [x["text"] for x in words_in_rect])
+        self.intersected_word = ' '.join([x['text'] for x in words_in_rect])
         pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
                   page.height - words_in_rect[-1]["top"])
-        for idx, pdf_attribute in enumerate(self.pdf_attributes):
-            if pdf_attribute[0] == self.pageidx:
-                min_dim = pdf_attribute[-1][3]
-                match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 20, int(pl_dim[x]) + 20) for x in range(4)])
-                if all(match):
-                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx, self.canvas.rect_tag, '1'])
-                    break
 
-            if pdf_attribute[6] > self.pageidx:
-                break
+        match, pdf_attribute, match_idx = self.return_match(pl_dim, 10, 20)
+        if match and all(match):
+            # print("pdf \t pdf %s \n match :%s\n\n"%(pdf_attribute,match))
+            self.pdf_to_csv.append([match_idx, self.rectangle_label, self.pageidx, self.canvas.rect_tag, '1'])
+            self.text_font = pdf_attribute[-1][1]
+            self.text_size = pdf_attribute[-1][2]
+            self.text_coords = pdf_attribute[-1][3]
+            self.marked.append(pdf_attribute[-1][3])
         return [words_in_rect[0]["x0"], words_in_rect[0]["top"], words_in_rect[-1]["x1"],
                 words_in_rect[0]["bottom"]]
 
@@ -476,6 +519,7 @@ class PDFViewer(Frame):
             self.pdf_to_csv = []
 
     def _to_file(self):
+        #print(self.pdf_to_csv)
         filepath = filedialog.asksaveasfilename(initialdir=os.getcwd(), title="Save files",
                                                 initialfile="pdf_extraction",
                                                 defaultextension=".csv",
@@ -521,3 +565,44 @@ class PDFViewer(Frame):
         help_frame.columnconfigure(0, weight=1)
         HelpBox(help_frame, width=w, height=h, bg=BACKGROUND_COLOR, relief=SUNKEN).grid(row=0, column=0)
 
+    def find_all_by_size(self):
+        current_page = self.pageidx
+        if self.rectangle_label == 'is_heading':
+            for idx, pdf_attribute in enumerate(self.pdf_attributes):
+                if pdf_attribute[-1][2] == self.text_size and self.text_coords != pdf_attribute[-1][3] and \
+                        pdf_attribute[0] == current_page and pdf_attribute[-1][3] not in self.marked:
+                    coords = list(pdf_attribute[-1][3])
+                    coords[1] = pdf_attribute[-1][-2] - coords[1]
+                    coords[3] = pdf_attribute[-1][-2] - coords[3]
+                    coords = list(map(Decimal, coords))
+                    coords = self.canvas.get_rect_coords(coords)
+                    self.rect = self.canvas.canvas.create_rectangle(coords[0], coords[1], coords[2], coords[3],
+                                                                    outline=self.rectangle_color)
+                    rectangle = [self.rect, coords[0], coords[3], coords[2], coords[1], self.rectangle_color]
+                    current_page = self.pageidx
+                    self.canvas.rectangles[current_page] = self.canvas.rectangles.get(current_page, [])
+                    self.canvas.rectangles[current_page].append(rectangle)
+                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx, self.rect, '1'])
+                    self.marked.append(pdf_attribute[-1][3])
+
+
+    def find_all_by_font(self):
+        current_page = self.pageidx
+        if self.rectangle_label == 'is_heading':
+            for idx, pdf_attribute in enumerate(self.pdf_attributes):
+                if pdf_attribute[-1][1] == self.text_font and self.text_coords[1] != pdf_attribute[-1][3][1] and \
+                        self.text_coords[3] != pdf_attribute[-1][3][3] and pdf_attribute[0] == current_page and \
+                        pdf_attribute[-1][3] not in self.marked:
+                    coords = list(pdf_attribute[-1][3])
+                    coords[1] = pdf_attribute[-1][-2] - coords[1]
+                    coords[3] = pdf_attribute[-1][-2] - coords[3]
+                    coords = list(map(Decimal, coords))
+                    coords = self.canvas.get_rect_coords(coords)
+                    self.rect = self.canvas.canvas.create_rectangle(coords[0], coords[1], coords[2], coords[3],
+                                                                    outline=self.rectangle_color)
+                    rectangle = [self.rect, coords[0], coords[3], coords[2], coords[1], self.rectangle_color]
+                    current_page = self.pageidx
+                    self.canvas.rectangles[current_page] = self.canvas.rectangles.get(current_page, [])
+                    self.canvas.rectangles[current_page].append(rectangle)
+                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx, self.rect, '1'])
+                    self.marked.append(pdf_attribute[-1][3])
