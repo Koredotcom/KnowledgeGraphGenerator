@@ -18,6 +18,7 @@ from pdfviewer.pdf_attributes import get_pdf_attributes
 class PDFViewer(Frame):
 
     def __init__(self, master=None, **kw):
+
         Frame.__init__(self, master, **kw)
         self.pdf = None
         self.page = None
@@ -36,6 +37,8 @@ class PDFViewer(Frame):
         self.rectangle_color = None
         self.rectangle_label = None
         self._init_ui()
+        self.width = self.master.winfo_screenwidth()
+        self.height = self.master.winfo_screenheight()
 
     def _init_ui(self):
         ws = self.master.winfo_screenwidth()
@@ -44,15 +47,15 @@ class PDFViewer(Frame):
         w = int(h / 1.414) + 100
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
-        self.master.geometry('%dx%d+%d+%d' % (ws, hs, 0, 0))
+        self.master.geometry('%dx%d+%d+%d' % (ws, hs, x, y))
+        self.master.resizable(width=1, height=1)
         self.master.title("PDFViewer")
-
-        self.master.rowconfigure(0, weight=0)
-        self.master.rowconfigure(0, weight=0)
-
+        self.master.rowconfigure(0, weight=1)
+        self.master.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
+        self.rowconfigure(1,weight=1)
         self.columnconfigure(0, weight=0)
-        self.columnconfigure(1, weight=0)
+        self.columnconfigure(1,weight=1)
 
         self.configure(bg=BACKGROUND_COLOR, bd=0)
 
@@ -61,12 +64,11 @@ class PDFViewer(Frame):
 
         tool_frame.grid(row=0, column=0, sticky='news')
         pdf_frame.grid(row=0, column=1, sticky='news')
-
         # Tool Frame
-        tool_frame.columnconfigure(0, weight=1)
-        tool_frame.rowconfigure(0, weight=0)
-        tool_frame.rowconfigure(1, weight=1)
-        tool_frame.rowconfigure(2, weight=0)
+        tool_frame.columnconfigure(0, weight=0)
+        tool_frame.rowconfigure(0, weight=1)
+        tool_frame.rowconfigure(1, weight=0)
+        tool_frame.rowconfigure(2, weight=1)
         tool_frame.rowconfigure(3, weight=1)
         tool_frame.rowconfigure(4, weight=0)
         tool_frame.rowconfigure(5, weight=1)
@@ -77,9 +79,7 @@ class PDFViewer(Frame):
 
         options.add_item('Open Files...', self._open_file)
         options.add_item('Save File...', self._to_file, seperator=True)
-        options.add_item('Next File', self._next_file)
-        options.add_item('Previous File', self._prev_file, seperator=True)
-        options.add_item('Help...', self._help, seperator=True)
+
         options.add_item('Exit', self.master.quit)
 
         tools = Frame(tool_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
@@ -118,10 +118,11 @@ class PDFViewer(Frame):
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR, fg="honeydew4").pack(pady=2)
         # PDF Frame
         pdf_frame.columnconfigure(0, weight=1)
+        pdf_frame.columnconfigure(1,weight=1)
         pdf_frame.rowconfigure(0, weight=0)
-        pdf_frame.rowconfigure(1, weight=0)
+        pdf_frame.rowconfigure(1, weight=1)
 
-        page_tools = Frame(pdf_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
+        page_tools = Frame(pdf_frame, width=500,height=50,bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         page_tools.grid(row=0, column=0, sticky='news')
 
         page_tools.rowconfigure(0, weight=1)
@@ -133,10 +134,6 @@ class PDFViewer(Frame):
 
         nav_frame = Frame(page_tools, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         nav_frame.grid(row=0, column=1, sticky='ns')
-
-        HoverButton(nav_frame, image_path=os.path.join('', 'widgets/first.png'),
-                    command=self._first_page, bg=BACKGROUND_COLOR, bd=0,
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(side=LEFT, expand=True)
         HoverButton(nav_frame, image_path=os.path.join('', 'widgets/prev.png'),
                     command=self._prev_page, bg=BACKGROUND_COLOR, bd=0,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(side=LEFT, expand=True)
@@ -147,9 +144,6 @@ class PDFViewer(Frame):
 
         HoverButton(nav_frame, image_path=os.path.join('', 'widgets/next.png'),
                     command=self._next_page, bg=BACKGROUND_COLOR, bd=0,
-                    highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(side=LEFT, expand=True)
-        HoverButton(nav_frame, image_path=os.path.join('', 'widgets/last.png'),
-                    command=self._last_page, bg=BACKGROUND_COLOR, bd=0,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(side=LEFT, expand=True)
 
         zoom_frame = Frame(page_tools, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
@@ -173,17 +167,19 @@ class PDFViewer(Frame):
                     command=self._zoom_in, bg=BACKGROUND_COLOR, bd=0,
                     highlightthickness=0, activebackground=HIGHLIGHT_COLOR).pack(side=RIGHT, expand=True)
 
-        canvas_frame = Frame(pdf_frame, bg=BACKGROUND_COLOR, bd=1, relief=SUNKEN)
+        canvas_frame = Frame(pdf_frame, bg=BACKGROUND_COLOR, bd=0, relief=SUNKEN)
         canvas_frame.grid(row=1, column=0, sticky='news')
-
-        self.canvas = DisplayCanvas(canvas_frame, page_height=hs - 68,
-                                    page_width=ws - 165)
+        canvas_frame.rowconfigure(0, weight=1)
+        canvas_frame.rowconfigure(1,weight=1)
+        canvas_frame.columnconfigure(0, weight=1)
+        canvas_frame.columnconfigure(1,weight=0)
+        self.canvas = DisplayCanvas(canvas_frame, page_height=hs -68,
+                                    page_width=ws - 165, highlightthickness=0)
         self.canvas.viewer = self
-        self.canvas.pack()
 
         self.grid(row=0, column=0, sticky='news')
 
-        self.master.minsize(height=h, width=w)
+        self.master.minsize(height=10 , width=50)
         self.master.maxsize(height=hs, width=ws)
 
     def _reject(self):
@@ -209,13 +205,15 @@ class PDFViewer(Frame):
         self.zoom_label.configure(text="Zoom {}%".format(int(self.scale * 100)))
         self.master.title("PDFViewer")
 
-    def _clear(self, all=False):
+    def _clear(self, redraw=False):
         if self.pdf is None:
             return
-        if all:
+        if redraw:
             self.canvas.rectangles = {}
         self.canvas.reset()
         self._update_page()
+        for attr in self.pdf_to_csv:
+            attr[-1] = 0
         self.update_in_file_attributes(0)
 
     def _zoom_in(self):
@@ -329,7 +327,7 @@ class PDFViewer(Frame):
 
     def _extract_text_coords(self):
         self.canvas.draw = False
-        self.canvas.configure(cursor='')
+        self.master.configure(cursor='')
         rect = self.canvas.get_rect()
         if rect is None:
             return
@@ -343,7 +341,7 @@ class PDFViewer(Frame):
                 word["intersect"] = 0
         max_intersect = max(words, key=lambda x: x['intersect'])
         words_in_rect = [word for word in words if
-                     word["top"] == max_intersect["top"] and word["bottom"] == max_intersect["bottom"]]
+                         word["top"] == max_intersect["top"] and word["bottom"] == max_intersect["bottom"]]
         # print("intersected words", [x["text"] for x in words_in_rect])
         pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
                   page.height - words_in_rect[-1]["top"])
@@ -352,23 +350,28 @@ class PDFViewer(Frame):
                 min_dim = pdf_attribute[-1][3]
                 match = set([int(min_dim[x]) in range(int(pl_dim[x]) - 20, int(pl_dim[x]) + 20) for x in range(4)])
                 if all(match):
-                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx])
+                    self.pdf_to_csv.append([idx, self.rectangle_label, self.pageidx, self.canvas.rect_tag, '1'])
                     break
+
             if pdf_attribute[6] > self.pageidx:
                 break
-
         return [words_in_rect[0]["x0"], words_in_rect[0]["top"], words_in_rect[-1]["x1"],
-                                                        words_in_rect[0]["bottom"]]
+                words_in_rect[0]["bottom"]]
 
     def _extract_text(self, label=None, color=None):
         if color:
+            if color == self.rectangle_color:
+                self.canvas.draw = False
+                self.rectangle_color = None
+                self.master.configure(cursor='')
+                return
             self.rectangle_color = color
             self.rectangle_label = label
         if self.pdf is None:
             return
         if not self.canvas.draw:
             self.canvas.draw = True
-            self.canvas.configure(cursor='cross')
+            self.master.configure(cursor='cross')
             return
 
     def _reproject_bbox(self, bbox):
@@ -429,7 +432,7 @@ class PDFViewer(Frame):
         return path
 
     def _load_file(self):
-        self._clear()
+        self._clear(True)
         path = self.paths[self.pathidx]
         filename = os.path.basename(path)
         if filename.split('.')[-1].lower() in ['jpg', 'png']:
@@ -465,16 +468,16 @@ class PDFViewer(Frame):
         self._load_file()
 
     def update_in_file_attributes(self, status):
-        for idx, label, pg_no in self.pdf_to_csv:
+        for idx, label, pg_no, rect_tag, status_csv in self.pdf_to_csv:
             if self.pdf_attributes[idx][0] == pg_no:
-                self.pdf_attributes[idx][self.labels.index(label)] = status
+                self.pdf_attributes[idx][self.labels.index(label)] = status_csv
         if not status:
             # remove selected attributes from main attributes
             self.pdf_to_csv = []
 
     def _to_file(self):
         filepath = filedialog.asksaveasfilename(initialdir=os.getcwd(), title="Save files",
-                                                initialfile="pdf_attributes",
+                                                initialfile="pdf_extraction",
                                                 defaultextension=".csv",
                                                 filetypes=[('csv files', '.csv'), ('text files', '.txt')])
         if not filepath or filepath == '':
@@ -517,3 +520,4 @@ class PDFViewer(Frame):
         help_frame.rowconfigure(0, weight=1)
         help_frame.columnconfigure(0, weight=1)
         HelpBox(help_frame, width=w, height=h, bg=BACKGROUND_COLOR, relief=SUNKEN).grid(row=0, column=0)
+
