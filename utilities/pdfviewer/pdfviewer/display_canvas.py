@@ -65,13 +65,10 @@ class DisplayCanvas(Frame):
     def on_button_press(self, event, rectangle=False):
         if rectangle:
             temp = list(self.btn_rect)
-            # print("btnrect", self.btn_rect)
             widget = event.widget
             event_coord = widget.canvasy(event.y)
-
             rect_tag = self.btn_rect[min(temp, key=lambda x: abs(x - event_coord))][0]
             but_tag = self.btn_rect[min(temp, key=lambda x: abs(x - event_coord))][1]
-            # print("y,rect,but", event_coord, rect_tag, but_tag)
             self.canvas.delete(rect_tag)
             self.canvas.delete(but_tag)
             current_page = self.viewer.pageidx
@@ -79,12 +76,18 @@ class DisplayCanvas(Frame):
                 if rect[0] == rect_tag:
                     del self.rectangles[current_page][self.rectangles[current_page].index(rect)]
                     break
+            temp_idx = 0
 
             for attr in self.viewer.pdf_to_csv:
                 if attr[-2] == rect_tag:
                     attr[-1] = 0
-
+                    temp_idx = attr[0]
                     break
+            for idx, pdf_attribute in enumerate(self.viewer.pdf_attributes):
+                if idx == temp_idx:
+                    if pdf_attribute[-1][3] in self.viewer.marked:
+                        del self.viewer.marked[self.viewer.marked.index(pdf_attribute[-1][3])]
+
         else:
             self.start_x = self.canvas.canvasx(event.x)
             self.start_y = self.canvas.canvasy(event.y)
@@ -214,7 +217,6 @@ class DisplayCanvas(Frame):
             self.buttonTXT = self.canvas.create_image(x - 10, y - 10, image=self.photoImg,
                                                       anchor=tk.NW)
 
-            # print(self.btntag_list, "in quit binder")
             self.btn_rect[y] = [rect_tag, self.buttonTXT]
 
             self.canvas.tag_bind(self.buttonTXT, "<ButtonPress-1>",
@@ -227,16 +229,15 @@ class DisplayCanvas(Frame):
         widget = event.widget
         x_coord = widget.canvasx(event.x)
         y_coord = widget.canvasy(event.y)
-        # print("x,y", x_coord, y_coord)
-        # print(self.rectangles)
         if page_id in self.rectangles:
             for rect in self.rectangles[page_id]:
-                if y_coord in range(int(rect[2]), int(rect[4])):
+                if int(y_coord) in range(int(rect[2]), int(rect[4])) and int(x_coord) in range(int(rect[1]),
+                                                                                               int(rect[3])):
                     self.rect_id = rect[0]
                     self.quit_binder(rect[0], rect[3], rect[2])
                     break
+
                 if rect[0] in self.btntag_list:
-                    # print(self.btntag_list[rect[0]], "buttaglist")
                     self.canvas.delete(self.btntag_list[rect[0]])
                     self.btntag_list.pop(rect[0])
 
@@ -246,7 +247,6 @@ class DisplayCanvas(Frame):
         hscale = float(event.height) / self.height
         self.width = event.width
         self.height = event.height
-        # print(event.width, event.height,'on resize')
 
         # resize the canvas
         self.canvas.config(width=self.width, height=self.height)
