@@ -134,7 +134,7 @@ def extract_attributes(path, toc):
                     text = clean_string(obj.get_text().strip())
                     text = text.replace('"', "'")
                     for c in obj:
-                        if not c.get_text() == ' ' or c.get_text()=='\n':
+                        if not (c.get_text() == ' ' or c.get_text()=='\n'):
                             letter_list.append(c)
                             word += c.get_text()
                         else:
@@ -345,6 +345,7 @@ def extract_hyperlinks(pdf_attributes):
     print('links not matched',not_matched)
     print('links not found',not_found)
     '''
+
     pdf_attributes = tuple(pdf_attributes)
     return pdf_attributes
 
