@@ -231,6 +231,8 @@ class PDFViewer(Frame):
         for attr in self.pdf_to_csv:
             attr[-1] = 0
         self.update_in_file_attributes(0)
+        self.text_font=''
+        self.text_size=0
 
     def _zoom_in(self):
         if self.pdf is None:
@@ -342,9 +344,7 @@ class PDFViewer(Frame):
         return i_x * i_y
 
     def return_match(self, pl_dim, start, end):
-
         if start <= end:
-            prev_text = ''
             for idx, pdf_attribute in enumerate(self.pdf_attributes):
                 if pdf_attribute[0] < self.pageidx:
                     pass
@@ -356,18 +356,53 @@ class PDFViewer(Frame):
                     if all(match):
                         #print("\nMatch : %s\n" % (pdf_attribute[-1][0]))
                         return match, pdf_attribute, idx
-                    if self.intersected_word != pdf_attribute[-1][0]:
-                        if prev_text + ' ' + pdf_attribute[-1][0] == self.intersected_word:
-
-                            return [True], pdf_attribute, idx
-                    prev_text = pdf_attribute[-1][0]
 
 
                 else:
 
                     return self.return_match(pl_dim, start + 1, end)
 
-        return [], None, 0
+        return [False], None, 0
+    def return_match_for_y(self,pl_dim_y,start,end):
+        matched_idxs=[]
+        if start <= end:
+            for idx, pdf_attribute in enumerate(self.pdf_attributes):
+                if pdf_attribute[0] < self.pageidx:
+                    continue
+                elif pdf_attribute[0] == self.pageidx:
+
+                    min_dim = [pdf_attribute[-1][3][1],pdf_attribute[-1][3][3]]
+                    match = set(
+                        [int(min_dim[x]) in range(int(pl_dim_y[x]) - start, int(pl_dim_y[x]) + start) for x in range(2)])
+
+                    if all(match):
+                        matched_attr=pdf_attribute[-1]
+                        for check_idx,check_attr in enumerate(self.pdf_attributes):
+                            if check_attr[0] < self.pageidx:
+                                continue
+                            elif check_attr[0] == self.pageidx:
+                                if check_attr[-1][3][1]==matched_attr[3][1] and matched_attr[3][3] == \
+                                        check_attr[-1][3][3]:
+                                    matched_idxs.append(check_idx)
+
+                        matched_pdf_attr=list(self.pdf_attributes[matched_idxs[0]][-1])
+                        text=matched_pdf_attr[0]+' '
+                        for i in range(1,len(matched_idxs)):
+                            text+=self.pdf_attributes[matched_idxs[i]][-1][0]+' '
+                            matched_pdf_attr[3]=(matched_pdf_attr[3][0],matched_pdf_attr[3][1],self.pdf_attributes[matched_idxs[i]][-1][3][2],matched_pdf_attr[3][3])
+                            matched_pdf_attr[0]=text.strip()
+                            del self.pdf_attributes[matched_idxs[i]]
+                            if text.strip()==self.intersected_word:
+                                self.pdf_attributes[matched_idxs[0]][-1]=tuple(matched_pdf_attr)
+                                matched_idxs=[]
+                                text=''
+
+                        #print("\nMatch : %s\n" % (pdf_attribute[-1][0]),'in match y')
+                        return match, pdf_attribute, idx
+
+
+        return [False], None, 0
+
 
     def _extract_text_coords(self):
         self.canvas.draw = False
@@ -387,15 +422,19 @@ class PDFViewer(Frame):
         words_in_rect = [word for word in words if
                          word["top"] == max_intersect["top"] and word["bottom"] == max_intersect["bottom"]]
         self.intersected_word = ' '.join([x['text'] for x in words_in_rect])
+        #print('matched word',self.intersected_word)
         pl_dim = (words_in_rect[0]["x0"], page.height - words_in_rect[-1]["bottom"], words_in_rect[-1]["x1"],
                   page.height - words_in_rect[-1]["top"])
-
         match, pdf_attribute, match_idx = self.return_match(pl_dim, 10, 20)
+        if self.intersected_word and not all(match):
+            pl_dim_y=(page.height-words_in_rect[0]["bottom"],page.height-words_in_rect[0]["top"])
+            match, pdf_attribute, match_idx = self.return_match_for_y(pl_dim_y, 10, 20)
+
         if match and all(match):
-            # print("pdf \t pdf %s \n match :%s\n\n"%(pdf_attribute,match))
+            #print("pdf \t pdf %s \n match :%s\n\n"%(pdf_attribute,match))
             self.pdf_to_csv.append([match_idx, self.rectangle_label, self.pageidx, self.canvas.rect_tag, '1'])
             self.text_font = pdf_attribute[-1][1]
-            self.text_size = pdf_attribute[-1][2]
+            self.text_size = round(pdf_attribute[-1][2])
             self.text_coords = pdf_attribute[-1][3]
             self.marked.append(pdf_attribute[-1][3])
         return [words_in_rect[0]["x0"], words_in_rect[0]["top"], words_in_rect[-1]["x1"],
@@ -569,11 +608,11 @@ class PDFViewer(Frame):
         current_page = self.pageidx
         if self.rectangle_label == 'is_heading':
             for idx, pdf_attribute in enumerate(self.pdf_attributes):
-                if pdf_attribute[-1][2] == self.text_size and self.text_coords != pdf_attribute[-1][3] and \
+                if round(pdf_attribute[-1][2]) == self.text_size and self.text_coords != pdf_attribute[-1][3] and \
                         pdf_attribute[0] == current_page and pdf_attribute[-1][3] not in self.marked:
                     coords = list(pdf_attribute[-1][3])
-                    coords[1] = pdf_attribute[-1][-2] - coords[1]
-                    coords[3] = pdf_attribute[-1][-2] - coords[3]
+                    coords[1] = pdf_attribute[-1][-3] - coords[1]
+                    coords[3] = pdf_attribute[-1][-3] - coords[3]
                     coords = list(map(Decimal, coords))
                     coords = self.canvas.get_rect_coords(coords)
                     self.rect = self.canvas.canvas.create_rectangle(coords[0], coords[1], coords[2], coords[3],
@@ -592,14 +631,14 @@ class PDFViewer(Frame):
             for idx, pdf_attribute in enumerate(self.pdf_attributes):
                 if pdf_attribute[-1][1] == self.text_font and self.text_coords[1] != pdf_attribute[-1][3][1] and \
                         self.text_coords[3] != pdf_attribute[-1][3][3] and pdf_attribute[0] == current_page and \
-                        pdf_attribute[-1][3] not in self.marked:
+                        pdf_attribute[-1][3] not in self.marked :
                     coords = list(pdf_attribute[-1][3])
-                    coords[1] = pdf_attribute[-1][-2] - coords[1]
-                    coords[3] = pdf_attribute[-1][-2] - coords[3]
+
+                    coords[1] = pdf_attribute[-1][-3] - coords[1]
+                    coords[3] = pdf_attribute[-1][-3] - coords[3]
                     coords = list(map(Decimal, coords))
                     coords = self.canvas.get_rect_coords(coords)
-                    self.rect = self.canvas.canvas.create_rectangle(coords[0], coords[1], coords[2], coords[3],
-                                                                    outline=self.rectangle_color)
+                    self.rect = self.canvas.canvas.create_rectangle(coords[0], coords[1], coords[2], coords[3],outline=self.rectangle_color)
                     rectangle = [self.rect, coords[0], coords[3], coords[2], coords[1], self.rectangle_color]
                     current_page = self.pageidx
                     self.canvas.rectangles[current_page] = self.canvas.rectangles.get(current_page, [])
