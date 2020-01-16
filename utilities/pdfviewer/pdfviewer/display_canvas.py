@@ -180,6 +180,10 @@ class DisplayCanvas(Frame):
     def clear(self):
         self.canvas.delete("all")
         self.image_obj = None
+        self.rectangles={}
+        self.viewer.marked=[]
+        self.viewer.text_size=0
+        self.viewer.text_font=''
 
     def get_rect(self):
         w, h = self.pil_image.size

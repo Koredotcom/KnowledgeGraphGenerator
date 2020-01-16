@@ -163,8 +163,8 @@ def extract_attributes(path, toc):
                         fontsize = None
                         obj.bbox = None
                         possible_heading = None
-                    if (not is_section_start_temp) or clean_string(obj.get_text().strip()) != clean_string(
-                            page_section_map[int(page.pageid - 1)].strip()):
+                    if obj.get_text().strip()!='' and ((not is_section_start_temp) or clean_string(obj.get_text().strip()) != clean_string(
+                            page_section_map[int(page.pageid - 1)].strip())):
                         final_result_element = (
                         obj.get_text().strip(), fontname, fontsize, obj.bbox, possible_heading, is_section_start,
                         page.pageid, page.height, page.width)
@@ -247,8 +247,6 @@ def get_pdf_attributes(file_path):
     pdf_attributes = clean_extracted_pdf(pdf_attributes)
     pdf_attributes = [[attr[6], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, attr] for attr in pdf_attributes]
     return pdf_attributes
-
-
 # pdf_attributes = get_pdf_attributes(sys.argv[1])
 # print(pdf_attributes)
 
@@ -280,8 +278,7 @@ def generate_pdf_attributes_csv():
             except:
                 continue
         writer.writerows(all_rows)
-
-
+    return pdf_attributes
 def extract_hyperlinks(pdf_attributes):
     matched=0
     not_matched=0
