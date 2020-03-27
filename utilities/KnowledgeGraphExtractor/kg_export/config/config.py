@@ -20,7 +20,7 @@ ontology_analyzer = {
 log = {
     "FORMAT_STRING": "[%(asctime)s] p%(process)s %(levelname)s - %(message)s {%(pathname)s:%(lineno)d}",
     "SERVER_FORMAT_STRING": "[%(asctime)s] %(message)s",
-    "ONTOLOGY_ANALYZER_LOG": "/home/lakshmikaivalya/Desktop/ontology analyzer/ont_analyzer.log",
+    "ONTOLOGY_ANALYZER_LOG": "ont_analyzer.log",
     "DEBUG_LOG_LEVEL": "ERROR",
     "SERVER_LOG_LEVEL": "INFO"
 }
