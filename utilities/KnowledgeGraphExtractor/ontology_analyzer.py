@@ -112,6 +112,8 @@ class OntologyAnalyzer:
                         has_faq = True if 'question' in faq_entry else False
                         node_at_node_map[terms_path] = Node((node_id, term, synonyms, has_faq, term_usage),
                                                             parent=node_at_node_map[parent_path])
+                elif idx == 0:
+                    faq_entry['nodeId'] = root_node_id
         # for pre, fill, node in RenderTree(root):
         #     print("%s%s" % (pre, node.name))
         return root
@@ -731,7 +733,6 @@ class OntologyAnalyzer:
         parent_tags_map = dict()
         root = self.build_tree()
         for faq_entry in self.file_data['faqs']:
-
             all_tags = list()
             all_questions = list()
 
@@ -759,7 +760,6 @@ class OntologyAnalyzer:
 
             all_tags.append(tags)
             all_questions.append(questions)
-
             parent_tags_map[faq_entry.get('nodeId')] = all_tags
             parent_faq_map[faq_entry.get("nodeId")] = all_questions
 
