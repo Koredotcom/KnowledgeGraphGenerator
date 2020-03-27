@@ -114,39 +114,6 @@ class OntologyAnalyzer:
         filtered_sentence = [w for w in word_tokens if not w in self.stopwords]
         return filtered_sentence
 
-    def longest_repeated_substring(self, input):
-        len_of_input = len(input)
-        LCSRe = [[0 for x in range(len_of_input + 1)]
-                 for y in range(len_of_input + 1)]
-
-        res = list()
-        res_length = 0
-
-        index = 0
-        for i in range(1, len_of_input + 1):
-            for j in range(i + 1, len_of_input + 1):
-                # (j-i) > LCSRe[i-1][j-1] to remove
-                # overlapping
-                if (input[i - 1].name[NODE_NAME] == input[j - 1].name[NODE_NAME] and
-                        LCSRe[i - 1][j - 1] < (j - i)):
-                    LCSRe[i][j] = LCSRe[i - 1][j - 1] + 1
-
-                    if (LCSRe[i][j] > res_length):
-                        res_length = LCSRe[i][j]
-                        index = max(i, index)
-                else:
-                    LCSRe[i][j] = 0
-
-        if (res_length > 0):
-            for i in range(index - res_length + 1,
-                           index + 1):
-                node_label = input[i - 1].name[NODE_NAME]
-                for node in input:
-                    if node_label == node.name[NODE_NAME]:
-                        #            res = res + input[i - 1][1]
-                        res.append(node)
-        return res
-
     def get_path_array(self, node):
         path = node.path
         path_arr = list()
@@ -179,12 +146,10 @@ class OntologyAnalyzer:
         if root_node.name[NODE_ID] in parent_faq_map:
             ques_at_root = parent_faq_map[root_node.name[NODE_ID]]
             tags_at_root = parent_tags_map[root_node.name[NODE_ID]]
-            if len(ques_at_root) > self.limits.get('questions_at_root_threshold'):
-                for idx, q in enumerate(ques_at_root):
-                    if count == self.limits.get('questions_at_root_limit'):
-                        count += 1
-                        faulty_questions.append(q[0])
-                        faulty_tags.append(tags_at_root[idx][0])
+            for idx, q in enumerate(ques_at_root):
+                if not tags_at_root[idx][0]:
+                    faulty_questions.append(q[0])
+                    faulty_tags.append(tags_at_root[idx][0])
         return self.create_response(questions=faulty_questions, tags=faulty_tags), True if len(
             faulty_questions) > 0 else False
 
@@ -385,7 +350,7 @@ class OntologyAnalyzer:
             oa_logger.info('Ontology analyzer ran for bot:' + root_node.name[NODE_NAME])
             # oa_logger.debug('Ontology analyzer response for bot:' + root_node.name[NODE_NAME] + ' : ' + str(response))
             self.generate_csv_report(response, 'analyzer_report.csv')
-            print('Report generated and saved in ... ')
+            print('Report generated and saved in analyzer_report.csv file ...')
         except Exception as e:
             oa_logger.debug(e)
             traceback.print_exc()
