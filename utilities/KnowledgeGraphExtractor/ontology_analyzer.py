@@ -251,7 +251,7 @@ class OntologyAnalyzer:
             tags_at_root = parent_tags_map[root_node.name[NODE_ID]]
             if len(ques_at_root) > self.limits.get('questions_at_root_threshold'):
                 for idx, q in enumerate(ques_at_root):
-                    if count == self.limits.get('questions_at_root_limit'):
+                    if count <= self.limits.get('questions_at_root_limit'):
                         count += 1
                         faulty_questions.append(q[0])
                         faulty_tags.append(tags_at_root[idx][0])
@@ -310,7 +310,7 @@ class OntologyAnalyzer:
         faulty_tags = list()
         count = 0
         for leaf in self.tree_traversal:
-            if leaf.name[NODE_ID] not in parent_faq_map or leaf == root_node:
+            if leaf.name[NODE_ID] not in parent_faq_map: # or leaf == root_node:
                 continue
             path = leaf.path
             total_content_set_initial = set()
