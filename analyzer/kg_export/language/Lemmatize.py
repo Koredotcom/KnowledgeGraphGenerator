@@ -186,7 +186,7 @@ if __name__ == "__main__":
     en_dict = EnglishDict()
 
     lemma.set_language('en')
-    print(lemma("I considered the stand Pronunciations while I $#ate chocolates banking webexs dbSupportPlus"))
+    print(lemma("I considered the stand authoring while I $#ate chocolates banking webexs dbSupportPlus"))
     lemma.set_language('es')
     print(lemma('Recordé las PROnunciaciones mientras comía chocolates'))
     lemma.set_language('fr')

@@ -104,6 +104,8 @@ class OntologyAnalyzer:
                         has_faq = True if 'question' in faq_entry else False
                         node_at_node_map[terms_path] = Node((node_id, term, synonyms, has_faq, term_usage),
                                                             parent=node_at_node_map[parent_path])
+                elif idx == 0:
+                    faq_entry['nodeId'] = root_node_id
         # for pre, fill, node in RenderTree(root):
         #     print("%s%s" % (pre, node.name))
         return root
@@ -155,11 +157,13 @@ class OntologyAnalyzer:
 
     def check_path_coverage(self, combined_ngrams, total_content_set, root_node, path_length):
         path_content_set = total_content_set - {''}
-        nodes_matched_in_path = [path_node for path_node in path_content_set if path_node in combined_ngrams]
-        path_match_percentage = math.ceil((len(nodes_matched_in_path) / path_length) * 100)
-        if path_match_percentage >= self.threshold:
-            return True
-        return False
+        if path_content_set:
+            nodes_matched_in_path = [path_node for path_node in path_content_set if path_node in combined_ngrams]
+            path_match_percentage = math.ceil((len(nodes_matched_in_path) / path_length) * 100)
+            if path_match_percentage >= self.threshold:
+                return True
+            return False
+        return True
 
     def check_unreachable_questions(self, root_node, parent_faq_map, parent_tags_map):
         faulty_questions = list()
@@ -167,7 +171,7 @@ class OntologyAnalyzer:
         faulty_tags = list()
         count = 0
         for leaf in self.tree_traversal:
-            if leaf.name[NODE_ID] not in parent_faq_map or leaf == root_node:
+            if leaf.name[NODE_ID] not in parent_faq_map:# or leaf == root_node:
                 continue
             path = leaf.path
             total_content_set_initial = set()
@@ -286,7 +290,7 @@ class OntologyAnalyzer:
             paths = result_obj.get('paths', [])
             tags = result_obj.get('tags', [])
             for ques_index in range(len(ques_array)):
-                path_str = ','.join(paths[ques_index])
+                path_str = ','.join(paths[ques_index]) if paths else ''
                 question = ques_array[ques_index]
                 tag_str = ','.join(tags[ques_index])
                 csv_result.append(['', '', error_type, question, path_str, tag_str])
