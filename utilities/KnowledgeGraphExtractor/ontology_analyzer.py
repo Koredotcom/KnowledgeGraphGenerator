@@ -24,8 +24,10 @@ from kg_export.config.config import SYNONYM_DELIMITER, TRAIT_DELIMITER, NODE_IDE
 from kg_export.log.Logger import Logger
 from kg_export.language.StopWords import StopWords
 from kg_export.language.Lemmatize import Lemmatizer
+from kg_export.language.StringProcessor import StringProcessor
 
 oa_logger = Logger('ont_analyzer')
+string_processor = StringProcessor()
 
 NODE_ID = 0
 NODE_NAME = 1
@@ -116,7 +118,7 @@ class OntologyAnalyzer:
 
     def lemmatize_and_remove_stopwords(self, text):
         text_wo_punctuation = re.sub(r"[-,.;@#?!&$/]+\ *", " ", text).lower()
-        word_tokens = self.lemmatizer.lemmatize(text_wo_punctuation)
+        word_tokens = string_processor.normalize(text_wo_punctuation, self.language)
         filtered_sentence = [w for w in word_tokens if not w in self.stopwords]
         return filtered_sentence
 
