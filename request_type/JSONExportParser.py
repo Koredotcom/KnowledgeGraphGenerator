@@ -29,7 +29,7 @@ class JSONExportParser(Parser):
 
     def get_stopwords_for_json(self):
         try:
-            if 'kgParams' in self.faq_payload:
+            if 'kgParams' in self.faq_payload and self.faq_payload['kgParams'].get('stopWords', []):
                 stop_words = set(self.faq_payload.get('kgParams').get('stopWords'))
                 if self.args.get('lang_code', '') == 'en':
                     stop_words.update(StopWords.english_question_words)
