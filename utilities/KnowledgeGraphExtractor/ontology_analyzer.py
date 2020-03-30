@@ -298,10 +298,14 @@ class OntologyAnalyzer:
         else:
             return self.create_response(), False
 
-    def check_path_coverage(self, combined_ngrams, total_content_set, root_node, path_length):
+    def check_path_coverage(self, combined_ngrams, total_content_set, root_node, path_length, mandatory_nodes_in_path):
         path_content_set = total_content_set - {''}
         nodes_matched_in_path = [path_node for path_node in path_content_set if path_node in combined_ngrams]
         path_match_percentage = math.ceil((len(nodes_matched_in_path) / path_length) * 100)
+        for mandatory_node in mandatory_nodes_in_path:
+            mandatory_node_name = mandatory_node.name[NODE_NAME]
+            if mandatory_node_name not in combined_ngrams:
+                return False
         if path_match_percentage >= self.threshold:
             return True
         return False
@@ -317,6 +321,12 @@ class OntologyAnalyzer:
             path = leaf.path
             total_content_set_initial = set()
             path_set = set()
+            mandatory_nodes_in_path = set()
+            for node_index, node_in_path in enumerate(path):
+                if node_in_path is not None and node_in_path.name[IS_MANDATORY] == "mandatory":
+                    mandatory_nodes_in_path.add(node_in_path)
+
+
             for node_index, node_in_path in enumerate(path):
                 if node_in_path is not None and node_in_path.name[IS_MANDATORY] != "organizer":
                     if node_index != 0:  # skip root_node name to decide path_coverage
@@ -348,7 +358,7 @@ class OntologyAnalyzer:
                             path_coverage_match = 1
                         else:
                             path_coverage_match = self.check_path_coverage(combined_ngrams, total_content_set, root_node,
-                                                                       len(total_path_set))
+                                                                       len(total_path_set), mandatory_nodes_in_path)
                         if not path_coverage_match:
                             count += 1
                             faulty_nodes.append(self.get_path_array(leaf))
