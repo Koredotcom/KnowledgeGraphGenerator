@@ -312,7 +312,7 @@ class OntologyAnalyzer:
         faulty_tags = list()
         count = 0
         for leaf in self.tree_traversal:
-            if leaf.name[NODE_ID] not in parent_faq_map: # or leaf == root_node:
+            if leaf.name[NODE_ID] not in parent_faq_map:
                 continue
             path = leaf.path
             total_content_set_initial = set()
@@ -344,8 +344,10 @@ class OntologyAnalyzer:
                         trigrams = self.generate_ngrams(question_norm, 3)
                         quadgrams = self.generate_ngrams(question_norm, 4)
                         combined_ngrams = unigrams + bigrams + trigrams + quadgrams
-
-                        path_coverage_match = self.check_path_coverage(combined_ngrams, total_content_set, root_node,
+                        if len(total_content_set) == 0:
+                            path_coverage_match = 1
+                        else:
+                            path_coverage_match = self.check_path_coverage(combined_ngrams, total_content_set, root_node,
                                                                        len(total_path_set))
                         if not path_coverage_match:
                             count += 1
@@ -754,7 +756,7 @@ class OntologyAnalyzer:
 
             tags = list(tags)
 
-            if faq_entry.get("refId") in parent_faq_map:
+            if faq_entry.get("nodeId") in parent_faq_map:
                 all_tags = parent_tags_map.get(faq_entry.get('nodeId'))
                 all_questions = parent_faq_map.get(faq_entry.get('nodeId'))
 
