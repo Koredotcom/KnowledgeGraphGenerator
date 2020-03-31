@@ -29,10 +29,10 @@ NODE_NAME = 1
 SYNONYMS = 2
 HAS_FAQS = 3
 IS_MANDATORY = 4
-ALLOWED_CHECKS = [
-    'unreachable_questions',
-    'questions_at_root'
-]
+ALLOWED_CHECKS = {
+    'unreachable_questions': 'UnreachableQuestions',
+    'questions_at_root': 'QuestionsAtRoot'
+}
 
 
 class OntologyAnalyzer:
@@ -149,9 +149,11 @@ class OntologyAnalyzer:
             ques_at_root = parent_faq_map[root_node.name[NODE_ID]]
             tags_at_root = parent_tags_map[root_node.name[NODE_ID]]
             for idx, q in enumerate(ques_at_root):
-                if not tags_at_root[idx][0]:
-                    faulty_questions.append(q[0])
-                    faulty_tags.append(tags_at_root[idx][0])
+                for ques_index in range(len(ques_at_root[idx])):
+                    if not tags_at_root[idx][ques_index]:
+                        faulty_questions.append(q[ques_index])
+                        faulty_tags.append(tags_at_root[idx][ques_index])
+
         return self.create_response(questions=faulty_questions, tags=faulty_tags), True if len(
             faulty_questions) > 0 else False
 
@@ -262,7 +264,7 @@ class OntologyAnalyzer:
 
             tags = list(tags)
 
-            if faq_entry.get("refId") in parent_faq_map:
+            if faq_entry.get("nodeId", '') in parent_faq_map:
                 all_tags = parent_tags_map.get(faq_entry.get('nodeId'))
                 all_questions = parent_faq_map.get(faq_entry.get('nodeId'))
 
@@ -293,7 +295,7 @@ class OntologyAnalyzer:
                 path_str = ','.join(paths[ques_index]) if paths else ''
                 question = ques_array[ques_index]
                 tag_str = ','.join(tags[ques_index])
-                csv_result.append(['', '', error_type, question, path_str, tag_str])
+                csv_result.append(['', '', ALLOWED_CHECKS[error_type], question, path_str, tag_str])
 
         if csv_result:
             with open(file_path, 'a') as fp:
