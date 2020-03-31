@@ -1,13 +1,16 @@
+import traceback
+
 from log.Logger import Logger
 from request_type.JSONExportParser import JSONExportParser as jsonParser
 from request_type.CSVParser import CSVParser as csvParser
 from request_type.CSVExportParser import CSVExportParser
 from strategy.NGramStrategy import GramBasedGenerator
 from response_type.JSONGenerator import JSONGenerator
+from analyzer.ontology_analyzer import OntologyAnalyzer
 import argparse
 
 logger = Logger()
-
+analyzer = OntologyAnalyzer()
 
 class KnowledgeGraphGenerator(object):
     def __init__(self):
@@ -44,6 +47,17 @@ class KnowledgeGraphGenerator(object):
         response_generator = self.get_response_generator()
         response = response_generator.create_response(response_payload)
         response_generator.write_response_to_file(response, args.get('output_file_path'))
+        if len(response.get('faqs', [])) > 0:
+            print('Analyzing generated graph...')
+            try:
+                analyzer_args = {'language': args.get('lang_code'), 'input_file_path': args.get('output_file_path')}
+                analyzer.run_diagnostics(analyzer_args)
+            except:
+                print('Error in analyzing graph !!!, go through log/auto_kg.log for detailed report')
+                logger.error(traceback.format_exc())
+        else:
+            print('Nothing to analyze...')
+        print('Graph generation completed')
 
 
 if __name__ == '__main__':
