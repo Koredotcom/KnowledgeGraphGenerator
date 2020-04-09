@@ -32,13 +32,17 @@ class GramBasedGenerator(object):
 
     @staticmethod
     def add_tag_to_single_word_questions(ques, stop_tokens):
-        ques = ques.strip()
-        ques = ques[:-1] if ques.endswith('?') else ques
-        ques_word_set = set(ques.lower().split()).difference(set(stop_tokens))
         tag = ''
-        if len(ques_word_set) == 1:
-            tag = list(ques_word_set)[0]
-        return tag
+        try:
+            ques = ques.strip()
+            ques = ques[:-1] if ques.endswith('?') else ques
+            ques_word_set = set(ques.lower().split()).difference(stop_tokens)
+            if len(ques_word_set) == 1:
+                tag = list(ques_word_set)[0]
+        except Exception:
+            logger.error(traceback.format_exc())
+        finally:
+            return tag
 
     def generate_graph(self, qna_object_map, stop_tokens):
         normalized_ques_list = [qna_obj.normalized_ques for qna_obj in qna_object_map.values()]
