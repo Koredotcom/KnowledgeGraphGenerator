@@ -31,10 +31,11 @@ class JSONExportParser(Parser):
         try:
             if 'kgParams' in self.faq_payload and self.faq_payload['kgParams'].get('stopWords', []):
                 stop_words = set(self.faq_payload.get('kgParams').get('stopWords'))
-                if self.args.get('lang_code', '') == 'en':
-                    stop_words.update(StopWords.english_question_words)
                 return stop_words
             else:
+                msg = "json export doesn't have stopwords, considering default stopwords ..."
+                logger.info(msg)
+                self.print_verbose(msg)
                 return self.get_stopwords()
         except Exception:
             logger.error(traceback.format_exc())

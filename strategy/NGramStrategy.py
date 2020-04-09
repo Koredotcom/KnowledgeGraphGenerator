@@ -30,6 +30,20 @@ class GramBasedGenerator(object):
                     pass
         return new_node_names
 
+    @staticmethod
+    def add_tag_to_single_word_questions(ques, stop_tokens):
+        tag = ''
+        try:
+            ques = ques.strip()
+            ques = ques[:-1] if ques.endswith('?') else ques
+            ques_word_set = set(ques.lower().split()).difference(stop_tokens)
+            if len(ques_word_set) == 1:
+                tag = list(ques_word_set)[0]
+        except Exception:
+            logger.error(traceback.format_exc())
+        finally:
+            return tag
+
     def generate_graph(self, qna_object_map, stop_tokens):
         normalized_ques_list = [qna_obj.normalized_ques for qna_obj in qna_object_map.values()]
         phrases, uni_tokens, verbs = phrase_finder_obj.find_all_phrases(normalized_ques_list, stop_tokens)
@@ -84,6 +98,9 @@ class GramBasedGenerator(object):
                             tags = term
                     except Exception:
                         pass
+
+                if not (terms or tags):
+                    tags = self.add_tag_to_single_word_questions(qna_object.question, stop_tokens)
 
                 terms = sorted(self._filter_substrings(terms), key=lambda x: most_commons_terms[x]) + [BOT_NAME]
                 quest_ontology_map[ques_id]['terms'] = terms
