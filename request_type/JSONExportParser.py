@@ -1,9 +1,10 @@
-from itertools import count as it_count
-from collections import namedtuple
-from request_type.Parser import StopWords, Parser
-from log.Logger import Logger
-from strategy.phrase_finder import PhraseFinder
 import traceback
+from collections import namedtuple
+from itertools import count as it_count
+
+from log.Logger import Logger
+from request_type.Parser import StopWords, Parser
+from strategy.phrase_finder import PhraseFinder
 
 logger = Logger()
 phrase_finder = PhraseFinder()
@@ -31,6 +32,8 @@ class JSONExportParser(Parser):
         try:
             if 'kgParams' in self.faq_payload and self.faq_payload['kgParams'].get('stopWords', []):
                 stop_words = set(self.faq_payload.get('kgParams').get('stopWords'))
+                if self.args.get('lang_code', '') == 'en':  # NLP-7736
+                    stop_words.update(StopWords.english_question_words)
                 return stop_words
             else:
                 msg = "json export doesn't have stopwords, considering default stopwords ..."
@@ -56,7 +59,8 @@ class JSONExportParser(Parser):
 
                 primary_ques_id = next(id_generator)
                 question_id_map[primary_ques_id] = qna_record(primary_ques, self.normalize_string(primary_ques),
-                                                              answer_payload, sub_answer_payload, qna.get('responseType'))
+                                                              answer_payload, sub_answer_payload,
+                                                              qna.get('responseType'))
                 ques_to_altq_id_map[primary_ques_id] = []
                 for sub_ques in alt_ques_payload:
                     alt_ques_id = next(id_generator)
