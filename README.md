@@ -57,7 +57,12 @@ Configuring KnowledgeGraph Generator involves the following major steps:
      <br>`python -m spacy download en`<br>
 
 ## Run KnowledgeGraph Generator
-Command - `python  KnowledgeGraphGenerator.py --file_path 'INPUT_FILE_PATH' --type 'INPUT_TYPE' --language 'LANGUAGE_CODE' --v true` <br>
+###Ubuntu
+`python  KnowledgeGraphGenerator.py --file_path 'INPUT_FILE_PATH' --type 'INPUT_TYPE' --language 'LANGUAGE_CODE' --v true` <br>
+
+###Windows
+`python  KnowledgeGraphGenerator.py --file_path INPUT_FILE_PATH --type INPUT_TYPE --language LANGUAGE_CODE --v true` <br>
+**note -** no quotes for command arguments in windows
 
 The command which generates KnowledgeGraph have options which need to be passed while executing the command. The following are the options which are used.<br>
 
