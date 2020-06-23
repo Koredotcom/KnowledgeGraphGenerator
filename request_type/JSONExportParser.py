@@ -85,9 +85,15 @@ class JSONExportParser(Parser):
                 result = defaultdict(list)
                 for key in graph_level_synonyms:
                     result[key] = graph_level_synonyms[key]
-                for key in generated_synonyms:
-                    synonyms = generated_synonyms[key].split(',')
-                    result[key].extend(synonyms)
+                for row in generated_synonyms:
+                    if len(row) > 1:
+                        synonyms = []
+                        key = row[0]
+                        for val in row[1].split(','):
+                            val = val.strip()
+                            if val:
+                                synonyms.append(val)
+                        result[key].extend(synonyms)
                 return result
             except Exception:
                 logger.error(traceback.format_exc())
