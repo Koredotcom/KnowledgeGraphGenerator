@@ -12,3 +12,4 @@ Pattern==3.6
 analyzer==0.1.1
 Sastrawi==1.0.1
 scikit-learn==0.21.3
+PyPDF2==1.26.0

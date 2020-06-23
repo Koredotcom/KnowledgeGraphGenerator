@@ -48,6 +48,9 @@ class GramBasedGenerator(object):
         normalized_ques_list = [qna_obj.normalized_ques for qna_obj in qna_object_map.values()]
         phrases, uni_tokens, verbs = phrase_finder_obj.find_all_phrases(normalized_ques_list, stop_tokens)
         most_commons_terms = dict()
+        most_commons_terms.update(phrases.most_common())
+        most_commons_terms.update(uni_tokens.most_common())
+        most_commons_terms.update(verbs.most_common())
         quest_ontology_map = defaultdict(dict)
         logger.info('Initiated ontology generation')
         try:
@@ -60,9 +63,7 @@ class GramBasedGenerator(object):
                 doc = nlp(q)
                 doc = " ".join([t.lemma_ if t.lemma_ != "-PRON-" else t.text for t in doc])
 
-                most_commons_terms.update(phrases.most_common())
-                most_commons_terms.update(uni_tokens.most_common())
-                most_commons_terms.update(verbs.most_common())
+
                 for term, cnt in phrases.most_common():
                     if cnt == 1:
                         break
@@ -111,5 +112,3 @@ class GramBasedGenerator(object):
             raise Exception('Failed in generating ontology')
 
         return quest_ontology_map
-
-# todo - seperate trigrams and bigrams, apply stashed changes
