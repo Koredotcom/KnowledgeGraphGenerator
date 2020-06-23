@@ -1,16 +1,17 @@
+import argparse
 import traceback
 
-from log.Logger import Logger
-from request_type.JSONExportParser import JSONExportParser as jsonParser
-from request_type.CSVParser import CSVParser as csvParser
-from request_type.CSVExportParser import CSVExportParser
-from strategy.NGramStrategy import GramBasedGenerator
-from response_type.JSONGenerator import JSONGenerator
 from analyzer.ontology_analyzer import OntologyAnalyzer
-import argparse
+from log.Logger import Logger
+from request_type.CSVExportParser import CSVExportParser
+from request_type.CSVParser import CSVParser as csvParser
+from request_type.JSONExportParser import JSONExportParser as jsonParser
+from response_type.JSONGenerator import JSONGenerator
+from strategy.NGramStrategy import GramBasedGenerator
 
 logger = Logger()
 analyzer = OntologyAnalyzer()
+
 
 class KnowledgeGraphGenerator(object):
     def __init__(self):
@@ -41,7 +42,8 @@ class KnowledgeGraphGenerator(object):
         response_payload = input_parser(args).parse()
 
         graph_generator = self.get_graph_generator()
-        tag_term_map = graph_generator().generate_graph(response_payload.get('question_map'), response_payload.get('stop_words'))
+        tag_term_map = graph_generator().generate_graph(response_payload.get('question_map'),
+                                                        response_payload.get('stop_words'))
         response_payload['tag_term_map'] = tag_term_map
 
         response_generator = self.get_response_generator()
@@ -66,12 +68,15 @@ if __name__ == '__main__':
     parser.add_argument('--language', help='language in which questions present', default='en')
     parser.add_argument('--v', help='to get detailed console logging', default=False)
     parser.add_argument('--type', help='types supported are faq_json, csv')
+    parser.add_argument('--synonyms_file_path', help='path to synonym file that needs to be included in output export',
+                        default=None)
     _input_arguments = parser.parse_args()
 
 
     def print_verbose(statement):
         if args.get('verbose', False):
             print(statement)
+
 
     args = dict()
     startup_checklist = list()
@@ -80,6 +85,7 @@ if __name__ == '__main__':
     args['verbose'] = _input_arguments.v
     args['input_file_path'] = _input_arguments.file_path
     args['request_type'] = _input_arguments.type
+    args['syn_file_path'] = _input_arguments.synonyms_file_path
     print_verbose('startup check initialised')
     ontology_generator = KnowledgeGraphGenerator()
     ontology_generator.generate_graph(args)

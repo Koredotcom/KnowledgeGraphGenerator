@@ -1,5 +1,5 @@
 import traceback
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 from itertools import count as it_count
 
 from log.Logger import Logger
@@ -22,11 +22,16 @@ class JSONExportParser(Parser):
             response['question_map'] = questions_map
             response['altq_map'] = ques_to_altq_map
             response['stop_words'] = stop_tokens
+            response['graph_synonyms'] = self.update_generated_synonyms(self.args['syn_file_path'], self.get_graph_level_synonyms())
             return response
         except Exception:
             error_msg = traceback.format_exc()
             logger.error(error_msg)
             self.print_verbose(error_msg)
+
+    def get_graph_level_synonyms(self):
+        synonyms = self.faq_payload.get('synonyms', {})
+        return synonyms
 
     def get_stopwords_for_json(self):
         try:
@@ -72,3 +77,20 @@ class JSONExportParser(Parser):
         except Exception:
             logger.error(traceback.format_exc())
             self.print_verbose('Failed in pre processing input')
+
+    def update_generated_synonyms(self, generated_syn_path, graph_level_synonyms):
+        if generated_syn_path:
+            try:
+                generated_synonyms = self.read_file_csv(generated_syn_path)
+                result = defaultdict(list)
+                for key in graph_level_synonyms:
+                    result[key] = graph_level_synonyms[key]
+                for key in generated_synonyms:
+                    synonyms = generated_synonyms[key].split(',')
+                    result[key].extend(synonyms)
+                return result
+            except Exception:
+                logger.error(traceback.format_exc())
+                return graph_level_synonyms
+        else:
+            return graph_level_synonyms

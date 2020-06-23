@@ -27,7 +27,7 @@ class JSONGenerator(object):
         questions_map = response_object.get('question_map', dict())
         ques_to_altq_map = response_object.get('altq_map', dict())
         tag_term_map = response_object.get('tag_term_map', dict())
-        response = {'faqs': []}
+        response = {'faqs': [], 'synonyms': response_object.get('graph_synonyms', dict())}
         try:
             logger.info('Creating response json')
             for ques_id in ques_to_altq_map:
