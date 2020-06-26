@@ -125,7 +125,7 @@ class GramBasedGenerator(object):
                 if not (terms or tags):
                     tags = self.add_tag_to_single_word_questions(qna_object.question, stop_tokens)
 
-                terms = self.replace_term_with_synonym_key(terms, graph_synonyms) + [BOT_NAME]
+                terms = self.replace_term_with_synonym_key(terms, syn_val_to_key_map) + [BOT_NAME]
                 terms_in_graph.extend(terms)
                 quest_ontology_map[ques_id]['terms'] = terms
                 tags = [tags] if tags else []
@@ -135,10 +135,9 @@ class GramBasedGenerator(object):
             raise Exception('Failed in generating ontology')
 
         term_counter = Counter(terms_in_graph)
+        a = set()
         for qna_obj in quest_ontology_map:
-            a = quest_ontology_map[qna_obj]['terms']
             quest_ontology_map[qna_obj]['terms'] = sorted(quest_ontology_map[qna_obj]['terms'], key=lambda x: term_counter[x])
-            v =1
+            a.update(quest_ontology_map[qna_obj]['terms'])
+        print(len(a))
         return quest_ontology_map
-
-# todo - seperate trigrams and bigrams, apply stashed changes
