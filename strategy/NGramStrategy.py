@@ -135,9 +135,7 @@ class GramBasedGenerator(object):
             raise Exception('Failed in generating ontology')
 
         term_counter = Counter(terms_in_graph)
-        a = set()
         for qna_obj in quest_ontology_map:
             quest_ontology_map[qna_obj]['terms'] = sorted(quest_ontology_map[qna_obj]['terms'], key=lambda x: term_counter[x])
-            a.update(quest_ontology_map[qna_obj]['terms'])
-        print(len(a))
+
         return quest_ontology_map
