@@ -8,9 +8,11 @@ from request_type.CSVParser import CSVParser as csvParser
 from request_type.JSONExportParser import JSONExportParser as jsonParser
 from response_type.JSONGenerator import JSONGenerator
 from strategy.NGramStrategy import GramBasedGenerator
+from graph_optmiser.Optmiser import Optimiser
 
 logger = Logger()
 analyzer = OntologyAnalyzer()
+optimiser = Optimiser()
 
 
 class KnowledgeGraphGenerator(object):
@@ -45,7 +47,7 @@ class KnowledgeGraphGenerator(object):
         tag_term_map = graph_generator().generate_graph(response_payload.get('question_map'),
                                                         response_payload.get('stop_words'), response_payload.get('graph_synonyms', dict()))
         response_payload['tag_term_map'] = tag_term_map
-
+        response_payload = optimiser.optimise_graph(response_payload)
         response_generator = self.get_response_generator()
         response = response_generator.create_response(response_payload)
         response_generator.write_response_to_file(response, args.get('output_file_path'))
