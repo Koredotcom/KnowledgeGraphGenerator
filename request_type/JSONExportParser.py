@@ -89,7 +89,7 @@ class JSONExportParser(Parser):
                     if len(row) > 1:
                         synonyms = []
                         key = row[0]
-                        for val in row[1].split(','):
+                        for val in row[1].split('/'):
                             val = val.strip()
                             if val:
                                 synonyms.append(val)
