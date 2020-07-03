@@ -145,8 +145,8 @@ Type specifies the type of input file. Currently only three formats are supporte
 Synonym generator is an add-on tool developed to help the bot developer derive synonyms for the nodes in the KG. For this, one need to follow the following basic steps:
 
 * **Step 1:** Run KG generator and create an ontology for the given questions.
-* **Step 2:** Run synonym generator, giving this ontology as input. Edit the synonyms file if required.
-* **Step 3:** Take the synonyms file that is generated and re-run KG generator with it to create the final ontology.
+* **Step 2:** Run synonym generator, giving this ontology as input.
+* **Step 3:** Take the synonyms file that is generated, edit it as required, and re-run KG generator with it to create the final ontology.
 
 The synonym generator has the following modes of operation:
 
