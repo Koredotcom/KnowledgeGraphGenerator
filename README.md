@@ -10,6 +10,7 @@ Use Kore.ai's Knowledge Graph Generator to automatically extract terms from FAQs
 [Command Options](#Command-Options)<br>
 [Option: langauge](#Option-language)<br>
 [Option: type](#type)<br>
+[Using Synonym Generator](#Using-Synonym-Generator)<br>
 [Output details](#Output-details)<br>
 [Graph analyzer](#Graph-analyzer)<br>
 [Troubleshooting](#Troubleshooting)<br>
