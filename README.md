@@ -169,7 +169,7 @@ If there are a substantial number of voluminous answers in the KG, the first opt
 * **Step 2:** Change to the synonym_generator folder.
 * **Step 3:** Run synonym generator using the following command:
 `python  synonym_generator.py --file_path 'INPUT_FILE_PATH' --training_data_path 'TRAINING_FILE_PATH' --type 'INPUT_TYPE' --use_google_news 'USE_GOOGLE_NEWS'` <br>
-* **Step 4:** The output is saved to a file called results.csv in that directory itself.
+* **Step 4:** The output is saved to a file called generated_synonyms.csv in that directory itself.
 
 These parameters take the following values:
 
