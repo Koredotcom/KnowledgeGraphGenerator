@@ -154,14 +154,14 @@ The synonym generator has the following modes of operation:
 * Using a given PDF document or ZIP of PDF documents to generate synonyms.
 * Using a pre-trained word2vec model based on GoogleNews to generate synonyms.
 
-If there are a substantial number of volumnous answers in the KG, the first option will give a closed-domain set of synonyms. In the event that the KG is smaller or does not have enough content, one can use a collection of PDF documents to provide the corpus. The third option gives a way to generate open-domain synonyms as it uses a model built using GoogleNews data.
+If there are a substantial number of voluminous answers in the KG, the first option will give a closed-domain set of synonyms. In the event that the KG is smaller or does not have enough content, one can use a collection of PDF documents to provide the corpus. The third option gives a way to generate open-domain synonyms as it uses a model built using GoogleNews data.
 
 ### Setting up Synonym Generator
 
 * **Step 1:** Download the GoogleNews model from [https://github.com/mmihaltz/word2vec-GoogleNews-vectors](https://github.com/mmihaltz/word2vec-GoogleNews-vectors) and save it in the synonym_generator folder.
 * **Step 2:** Change to the synonym_genreator folder.
 * **Step 3:** Run synonym generator using the following command:
-`python  synonym_generator.py --file_path 'INPUT_FILE_PATH' --training_data_path 'TRAINING_FILE_PATH' --type 'INPUT_TYPE' --use_google_news 'USE_GOOGLE_NEWS' <br>`
+`python  synonym_generator.py --file_path 'INPUT_FILE_PATH' --training_data_path 'TRAINING_FILE_PATH' --type 'INPUT_TYPE' --use_google_news 'USE_GOOGLE_NEWS'` <br>
 * **Step 4:** The output is saved to a file called results.csv in that directory itself.
 
 These parameters take the following values:
