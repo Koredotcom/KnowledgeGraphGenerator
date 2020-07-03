@@ -70,7 +70,7 @@ def fetch_synonyms(words, file_name):
 
     similarities.sort(key=lambda x: x[0], reverse=True)
 
-    with open("results.csv", 'w') as fp:
+    with open("generated_synonyms.csv", 'w') as fp:
         csv_writer = csv.writer(fp, delimiter=',', quotechar='"')
         for i in similarities:
             csv_writer.writerow([i[1]] + ['/'.join(i[2].split('\t'))])
