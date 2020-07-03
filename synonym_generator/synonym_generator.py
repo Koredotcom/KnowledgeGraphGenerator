@@ -50,8 +50,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--file_path', help='path for input json file')
-    parser.add_argument('--training_data_path ', help='path for input pdf file or zip containing pdfs', default=None)
-    parser.add_argument('--type ', help='type of training data, pdf or zip', default='pdf')
+    parser.add_argument('--training_data_path', help='path for input pdf file or zip containing pdfs', default=None)
+    parser.add_argument('--type', help='type of training data, pdf or zip', default='pdf')
     parser.add_argument('--use_google_news', help='use googlenews-based pretrained word2vec model', default=False)
 
     _input_arguments = parser.parse_args()
