@@ -31,8 +31,8 @@ def train_word2Vec(corpus, dim):
     return model
 
 
-def fetch_synonyms(words, file_name, zip_mode = False):
-    model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)#, norm_only=True)
+def fetch_synonyms(words, file_name, pretrained_model, zip_mode = False):
+    model = gensim.models.KeyedVectors.load_word2vec_format(pretrained_model, binary=True)#, norm_only=True)
     wv = model.wv
 
     similarities = []
