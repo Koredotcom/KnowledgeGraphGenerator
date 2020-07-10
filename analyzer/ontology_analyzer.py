@@ -298,7 +298,7 @@ class OntologyAnalyzer:
                 csv_result.append(['', '', ALLOWED_CHECKS[error_type], question, path_str, tag_str])
 
         if csv_result:
-            with open(file_path, 'a') as fp:
+            with open(file_path, 'w') as fp:
                 writer = csv.writer(fp)
                 if header:
                     writer.writerow(header)
