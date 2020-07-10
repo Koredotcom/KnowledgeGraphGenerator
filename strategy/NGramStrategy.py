@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import defaultdict
 from tqdm import tqdm
 from common import nlp, BOT_NAME
 from strategy.phrase_finder import PhraseFinder
@@ -44,37 +44,15 @@ class GramBasedGenerator(object):
         finally:
             return tag
 
-    @staticmethod
-    def create_synonym_replacement_format(graph_synonyms):
-        """
-        synonyms come as key and list of values, convert it to value to key
-        :type graph_synonyms: dict
-        """
-        val_to_key_syn_map = defaultdict(list)
-        for syn_key, syn_values in graph_synonyms.items():
-            for val in syn_values:
-                val_to_key_syn_map[val].append(syn_key)
-        return val_to_key_syn_map
-
-    @staticmethod
-    def replace_term_with_synonym_key(terms, syn_val_to_key_map):
-        for idx in range(len(terms)):
-            syn_key = syn_val_to_key_map.get(terms[idx])
-            if syn_key and len(syn_key) == 1:  # multiple keys resembles overlapping synonyms
-                terms[idx] = syn_key[0]
-        return terms
-
-    def generate_graph(self, qna_object_map, stop_tokens, graph_synonyms):
-        syn_val_to_key_map = self.create_synonym_replacement_format(graph_synonyms)
+    def generate_graph(self, qna_object_map, stop_tokens):
         normalized_ques_list = [qna_obj.normalized_ques for qna_obj in qna_object_map.values()]
         phrases, uni_tokens, verbs = phrase_finder_obj.find_all_phrases(normalized_ques_list, stop_tokens)
         most_commons_terms = dict()
-        quest_ontology_map = defaultdict(dict)
-        logger.info('Initiated ontology generation')
         most_commons_terms.update(phrases.most_common())
         most_commons_terms.update(uni_tokens.most_common())
         most_commons_terms.update(verbs.most_common())
-        terms_in_graph = list()
+        quest_ontology_map = defaultdict(dict)
+        logger.info('Initiated ontology generation')
         try:
             for ques_id, qna_object in tqdm(qna_object_map.items()):
                 ques = qna_object.normalized_ques
@@ -125,17 +103,12 @@ class GramBasedGenerator(object):
                 if not (terms or tags):
                     tags = self.add_tag_to_single_word_questions(qna_object.question, stop_tokens)
 
-                terms = self.replace_term_with_synonym_key(terms, syn_val_to_key_map) + [BOT_NAME]
-                terms_in_graph.extend(terms)
+                terms = sorted(self._filter_substrings(terms), key=lambda x: most_commons_terms[x]) + [BOT_NAME]
                 quest_ontology_map[ques_id]['terms'] = terms
                 tags = [tags] if tags else []
                 quest_ontology_map[ques_id]['tags'] = tags
         except Exception:
             logger.error(traceback.format_exc())
             raise Exception('Failed in generating ontology')
-
-        term_counter = Counter(terms_in_graph)
-        for qna_obj in quest_ontology_map:
-            quest_ontology_map[qna_obj]['terms'] = sorted(quest_ontology_map[qna_obj]['terms'], key=lambda x: term_counter[x])
 
         return quest_ontology_map
