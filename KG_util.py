@@ -10,6 +10,8 @@ import nltk
 from nltk.corpus import stopwords 
 import csv
 import argparse
+import re
+from bs4 import BeautifulSoup
 from indentAPI import Indent
 from log.Logger import Logger
 import CSV_utill as csv_util
@@ -493,7 +495,31 @@ def backup_inputKG(input_file_name):
 		oa.info("backup of file complete at backup/"+backup_file)
 	else:
 		oa.info("backup of file already exists at: backup/"+backup_file)
-	
+
+def cleaninput(text):
+
+
+    soup = BeautifulSoup(text,features="lxml")
+
+    # kill all script and style elements
+    for script in soup(["script", "style"]):
+        script.decompose()    # rip it out
+
+    # get text
+    text = soup.get_text()
+
+    # break into lines and remove leading and trailing space on each
+    lines = (line.strip() for line in text.splitlines())
+    # break multi-headlines into a line each
+    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+    # drop blank lines
+    text = '\n'.join(chunk for chunk in chunks if chunk)
+    for k in text.split("\n"):
+        text=re.sub(r"[^-_'!?a-zA-Z0-9]+", ' ', k)
+    
+
+    return text
+
 	
 
 
@@ -537,8 +563,10 @@ if __name__=="__main__":
 		args['output_file_path']='output_file.json'
 
 		if args['operation']=='edit':
-			question=input("Enter a quesiton to edit: ")
-			replacement=input("\n Enter the replacement question: ")
+			question=cleaninput(str(input("Enter a quesiton to edit: ")))
+			replacement=cleaninput(str(input("\n Enter the replacement question: ")))
+
+
 			if question=='' or replacement=='':
 				print("Check the entered quesiton")
 			else:
@@ -546,10 +574,11 @@ if __name__=="__main__":
 				oa.info("Question: "+question+" edited successfuly")
 
 		if args['operation']=='delete':
-			question=input("Enter the question to delete:")
+			question=cleaninput(str(input("Enter the question to delete:")))
 			if question=='':
 				print("Check the entered quesiton")
-			deleteQ_json(args,question.strip())
+			else:
+				deleteQ_json(args,question.strip())
 		
 		if args['operation']=='add':
 			data=None
@@ -560,19 +589,25 @@ if __name__=="__main__":
 		args['output_file_path']='output_file.csv'
 
 		if args['operation']=='edit':
-			question=input("Enter a quesiton to edit: ")
-			replacement=input("\n Enter the replacement question: ")
+			question=cleaninput(str(input("Enter a quesiton to edit: ")))
+			replacement=cleaninput(str(input("\n Enter the replacement question: ")))
 			if question=='' or replacement=='':
 				print("Check the entered quesiton")
 			else:
+				print("searching the question as\t",question)
+				print("putting the replacement as\t",replacement)
+				print("\n")
 				csv_util.editQ_csv(question,replacement,args['input_file_path'],args['output_file_path'])
 				oa.info("Question: "+question+" edited successfuly")
 
 		if args['operation']=='delete':
-			question=input("Enter the question to delete:")
+			question=cleaninput(str(input("Enter the question to delete:")))
 			if question=='':
 				print("Check the entered quesiton")
-			csv_util.deleteQ_csv(question,args['input_file_path'],args['output_file_path'])
+			else:
+				print("searching the question as \t",question)
+				print("\n")
+				csv_util.deleteQ_csv(question,args['input_file_path'],args['output_file_path'])
 
 		
 		if args['operation']=='add':
