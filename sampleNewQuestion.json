@@ -1,0 +1,20 @@
+{
+	"faq": [
+	  {
+			"question": "Is boba popular??",
+			"answer": "yes it's popular"
+		},
+		{
+			"question": "How do I hire a new employee on",
+			"answer": "Please follow this specific steps to raise a ticket"
+		},
+		{
+			"question": "How to raise a ticket with for laptop replacement",
+			"answer": "Please follow this specific steps to raise a ticket"
+    },
+    {
+			"question": "This is a test question",
+			"answer": "this is test answer"
+		}
+	]
+}

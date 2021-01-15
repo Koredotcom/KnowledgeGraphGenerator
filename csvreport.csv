@@ -1,0 +1,134 @@
+UnreachableQuestions,Why can't I see my employee in the Thrive Reports module?,"NetApp HR Bot,Thrive Program",thrive-program
+UnreachableQuestions,what is part of the thrive rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,what are thrive rewards comprised of?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,what is the cut-off for thrive rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,what's the same with thrive rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,When does thrive start?,"NetApp HR Bot,Thrive Program,Thrive Rewards","timeline,date,thrive"
+UnreachableQuestions,Who makes Thrive Rewards decisions?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,What is new annual compensation program?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,whats this compensation program?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,What is Thrive Rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,when can an employee access the thrive rewards tools?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,When is Thrive Rewards this year?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,When is the current year thrive rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards",
+UnreachableQuestions,Tell me if i can go above the rewards instructions for the wages?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary",
+UnreachableQuestions,when will the thrive rewards letter be open for communication?,"NetApp HR Bot,Thrive Program,Thrive Rewards,FY21",
+UnreachableQuestions,when will salary increases show?,"NetApp HR Bot,Thrive Program,Thrive Rewards,FY21",
+UnreachableQuestions,when must an employee have started employment to be able to get ICP rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards,FY21",
+UnreachableQuestions,what is my rating?,"NetApp HR Bot,Thrive Program,Performance,Review",rating
+UnreachableQuestions,can terminated employees get salary rewards?,"NetApp HR Bot,Thrive Program,Other,terminate",
+UnreachableQuestions,if an employee is fired can they get salary rewards?,"NetApp HR Bot,Thrive Program,Other,terminate",
+UnreachableQuestions,do managers have resources?,"NetApp HR Bot,Thrive Program,Other,Resource,Manager",resources
+UnreachableQuestions,what sort of resources do managers have?,"NetApp HR Bot,Thrive Program,Other,Resource,Manager",resources
+UnreachableQuestions,are there resources at a managers disposal?,"NetApp HR Bot,Thrive Program,Other,Resource,Manager",resources
+UnreachableQuestions,what tools do managers have at their disposal?,"NetApp HR Bot,Thrive Program,Other,Resource,Manager",tools
+UnreachableQuestions,will commission stay?,"NetApp HR Bot,Thrive Program,sales",
+UnreachableQuestions,will commission still be available?,"NetApp HR Bot,Thrive Program,sales",
+UnreachableQuestions,is commission changing?,"NetApp HR Bot,Thrive Program,sales",
+UnreachableQuestions,I never got my bubble chart,"NetApp HR Bot,Thrive Program,People Central,Scattergram",bubble-chart
+UnreachableQuestions,where is my bubble chart?,"NetApp HR Bot,Thrive Program,People Central,Scattergram",bubble-chart
+UnreachableQuestions,what should not be shared?,"NetApp HR Bot,Thrive Program,Share",
+UnreachableQuestions,what are our rules for budgeting?,"NetApp HR Bot,Thrive Program,Budget",
+UnreachableQuestions,budgeting guidelines,"NetApp HR Bot,Thrive Program,Budget",
+UnreachableQuestions,are there any changes between the surveys?,"NetApp HR Bot,Thrive Program,Thrive Survey",
+UnreachableQuestions,Can i view the Thrive surveys?,"NetApp HR Bot,Thrive Program,Thrive Survey",
+UnreachableQuestions,When does promotions take effect for FY21?,"NetApp HR Bot,Thrive Program,Promotion",when
+UnreachableQuestions,when will an employee get his promotions for FY21,"NetApp HR Bot,Thrive Program,Promotion",
+UnreachableQuestions,are we going to change the process for promotions?,"NetApp HR Bot,Thrive Program,Promotion",
+UnreachableQuestions,How do I enroll in my benefits?,"NetApp HR Bot,U.S. Benefits,Eligibility & Enrollment",enroll
+UnreachableQuestions,How to sign up for benefits?,"NetApp HR Bot,U.S. Benefits,Eligibility & Enrollment",sign-up
+UnreachableQuestions,How to enroll in medical benefits?,"NetApp HR Bot,U.S. Benefits,Eligibility & Enrollment",enroll
+UnreachableQuestions,When can I make changes to my benefits?,"NetApp HR Bot,U.S. Benefits,Eligibility & Enrollment",benefits
+UnreachableQuestions,What is my sick or vacation balance?,"NetApp HR Bot,U.S. Benefits,Time off","PTO,Vacation,sick-days"
+UnreachableQuestions,How do I find my time off balance?,"NetApp HR Bot,U.S. Benefits,Time off","PTO,vacation,sick-days"
+UnreachableQuestions,Where do I log my vacation?,"NetApp HR Bot,U.S. Benefits,Time off",vacation
+UnreachableQuestions,where do i log sick days?,"NetApp HR Bot,U.S. Benefits,Time off",sick-days
+UnreachableQuestions,Where's my group number?,"NetApp HR Bot,U.S. Benefits,General",group-number
+UnreachableQuestions,Is there a Contact List for NetApp's Benefits Providers?,"NetApp HR Bot,U.S. Benefits,General",provider
+UnreachableQuestions,What are my benefits providers?,"NetApp HR Bot,U.S. Benefits,General",benefits-providers
+UnreachableQuestions,Who are the benefits providers for NetApp?,"NetApp HR Bot,U.S. Benefits,General",benefits-providers
+UnreachableQuestions,Where can I find my dental benefits information?,"NetApp HR Bot,U.S. Benefits,General","benefits,dental,coverage"
+UnreachableQuestions,What's my benefits?,"NetApp HR Bot,U.S. Benefits,General","benefits,coverage"
+UnreachableQuestions,What's my dental benefits?,"NetApp HR Bot,U.S. Benefits,General","benefits,dental,coverage"
+UnreachableQuestions,what is my health benefits?,"NetApp HR Bot,U.S. Benefits,General","benefits,health-benefits,coverage"
+UnreachableQuestions,What is my vision benefits?,"NetApp HR Bot,U.S. Benefits,General","benefits,vision-benefits,coverage"
+UnreachableQuestions,Where can i find my benefits?,"NetApp HR Bot,U.S. Benefits,General",benefits
+UnreachableQuestions,my benefits,"NetApp HR Bot,U.S. Benefits,General",benefits
+UnreachableQuestions,Where can I learn more about my retirement plan?,"NetApp HR Bot,U.S. Benefits,401K",retirement-plan
+UnreachableQuestions,What is NetApp's LOA policy?,"NetApp HR Bot,U.S. Benefits,Leave of absence","leave-of-absence,loa"
+UnreachableQuestions,Where do I log in to ADP?,"NetApp HR Bot,HR General","paycheck,adp"
+UnreachableQuestions,Where is my paycheck information?,"NetApp HR Bot,HR General","paycheck,adp"
+UnreachableQuestions,where to log expenses?,"NetApp HR Bot,HR General",
+UnreachableQuestions,Where can I access People Central?,"NetApp HR Bot,HR General","people-central,success-factor"
+UnreachableQuestions,Where can I access success factor?,"NetApp HR Bot,HR General","people-central,success-factor"
+UnreachableQuestions,Who can participate in the Volunteer Time Off program?,"NetApp HR Bot,NetApp Serves","vto,volunteer"
+UnreachableQuestions,Where do I log my VTO?,"NetApp HR Bot,NetApp Serves","VTO,log,timeoff,volunteer"
+UnreachableQuestions,What criteria makes a hire an Early in Career Employee?,"NetApp HR Bot,Talent Acquisition,Early in Career",EIC
+UnreachableQuestions,Who would be an early in career candidate?,"NetApp HR Bot,Talent Acquisition,Early in Career",EIC
+UnreachableQuestions,"I would like to refer a friend, what's the process?","NetApp HR Bot,Talent Acquisition,Employee Referral Program",refer
+UnreachableQuestions,How do I hire a new employee on my team?,"NetApp HR Bot,Talent Acquisition,Global Hiring Process","requisition,hire"
+UnreachableQuestions,How do I hire for my team?,"NetApp HR Bot,Talent Acquisition,Global Hiring Process",team
+UnreachableQuestions,Where do I see internal postings?,"NetApp HR Bot,Talent Acquisition,Internal Job Opportunities",internal-postings
+UnreachableQuestions,What jobs are open at netapp?,"NetApp HR Bot,Talent Acquisition,Internal Job Opportunities",open-jobs
+UnreachableQuestions,How do I apply for another job at NetApp?,"NetApp HR Bot,Talent Acquisition,Internal Job Opportunities","career-growth,transfer"
+UnreachableQuestions,What jobs do I qualify for at NetApp?,"NetApp HR Bot,Talent Acquisition,Internal Job Opportunities","career-growth,transfer"
+UnreachableQuestions,How can I find a new job at NetApp?,"NetApp HR Bot,Talent Acquisition,Internal Job Opportunities",
+UnreachableQuestions,What is the next job for me at NetApp?,"NetApp HR Bot,Talent Acquisition,Internal Job Opportunities",
+UnreachableQuestions,What positions are open at NetApp?,"NetApp HR Bot,Talent Acquisition,Internal Job Opportunities",
+overlapping_alternate_questions,"{'alternate': [""Why can't I share the answers the performance differentiation questions with my employee?"", ""Why can't I share the answers to the performance differentiation questions with my employee?""]}","NetApp HR Bot,Thrive Program,Performance",
+overlapping_alternate_questions,"{'alternate': ['is it possible to have more than the reward guidelines for equity?', 'is it possible to have more than the reward guidelines for ICP?', 'is it possible to have more than the reward guidelines for salary?']}","NetApp HR Bot,Thrive Program,Thrive Rewards",
+overlapping_alternate_questions,"{'alternate': ['When is Thrive Rewards tool open?'], 'primary': 'When will Thrive Rewards Tool open?'}","NetApp HR Bot,Thrive Program,Thrive Rewards",
+questions_with_multiple_matched_paths,Should I share the answers to the performance differentiation questions with my employee?,"[matches]-->,NetApp HR Bot,Thrive Program,Performance,[matches]-->,NetApp HR Bot,Thrive Program,Share,[current path]->,NetApp HR Bot,Thrive Program,Performance","share,performance-differentiation-questions,answers,employee"
+questions_with_multiple_matched_paths,Why can't I share the answers the performance differentiation questions with my employee?,"[matches]-->,NetApp HR Bot,Thrive Program,Performance,[matches]-->,NetApp HR Bot,Thrive Program,Share,[current path]->,NetApp HR Bot,Thrive Program,Performance","share,performance-differentiation-questions,answers"
+questions_with_multiple_matched_paths,Why can't I share the answers to the performance differentiation questions with my employee?,"[matches]-->,NetApp HR Bot,Thrive Program,Performance,[matches]-->,NetApp HR Bot,Thrive Program,Share,[current path]->,NetApp HR Bot,Thrive Program,Performance","share,performance-differentiation-questions,answers"
+questions_with_multiple_matched_paths,may i share the performance differentiation answers?,"[matches]-->,NetApp HR Bot,Thrive Program,Performance,[matches]-->,NetApp HR Bot,Thrive Program,Share,[current path]->,NetApp HR Bot,Thrive Program,Performance",performance-differentiation-answers
+questions_with_multiple_matched_paths,can i share my performance differentiation questions with employees?,"[matches]-->,NetApp HR Bot,Thrive Program,Performance,[matches]-->,NetApp HR Bot,Thrive Program,Share,[current path]->,NetApp HR Bot,Thrive Program,Performance",
+possible_new_nodes,Are there any changes to this year’s Equity program?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Equity Reward,year ’ s,there","program,equity,changes,year-’-s"
+possible_new_nodes,Who is eligible for Thrive Rewards Equity?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Equity Reward,eligible,who","Equity,Thrive-Rewards"
+possible_new_nodes,Can I go above rewards guidelines for Equity?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Equity Reward,above,can","guidelines,go,rewards,equity"
+possible_new_nodes,Do I still need to set goals?,"NetApp HR Bot,Thrive Program,Goals,do,to","need,set,still"
+possible_new_nodes,What happens to the goals set in People Central?,"NetApp HR Bot,Thrive Program,Goals,what,the","central,people,set,happens"
+possible_new_nodes,"How does NetApp define ""performance""?","NetApp HR Bot,Thrive Program,Performance,does,``","netapp,define"
+possible_new_nodes,Should I show employees where they land on the Performance Differentiation tool?,"NetApp HR Bot,Thrive Program,Performance,differentiation,land","performance-differentiation,landed,employees"
+possible_new_nodes,Does the Performance Differentiation apply to commission employees?,"NetApp HR Bot,Thrive Program,Performance,commission employees,does","commission,apply,differentiation,performance,employees"
+possible_new_nodes,Where can I find the Performance Differentiation tools and reports?,"NetApp HR Bot,Thrive Program,Performance,differentiation,the","performance-differentiation,reports,find,tools"
+possible_new_nodes,What happens with my previous performance reviews since we won’t use them going forward?,"NetApp HR Bot,Thrive Program,Performance,’ t use,happens","forward,reviews"
+possible_new_nodes,What happens with previous performance reviews for my employees since we won’t use them going forward?,"NetApp HR Bot,Thrive Program,Performance,employees,’ t use",forward
+possible_new_nodes,Should I share the answers to the performance differentiation questions with my employee?,"NetApp HR Bot,Thrive Program,Performance,with,the","share,performance-differentiation-questions,answers,employee"
+possible_new_nodes,"Can I go above rewards guidelines for Salary, Equity or ICP?","NetApp HR Bot,Thrive Program,Thrive Rewards,equity,salary",rewards-guidelines
+possible_new_nodes,What rewards components are a part of Thrive Rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards,what,part",rewards-components
+possible_new_nodes,What is the cut-off date for Thrive Rewards tool?,"NetApp HR Bot,Thrive Program,Thrive Rewards,cut-off date,what","date,tool,cut-off"
+possible_new_nodes,What's staying the same with Thrive Rewards?,"NetApp HR Bot,Thrive Program,Thrive Rewards,with,same","staying,thrive-rewards"
+possible_new_nodes,What is the Thrive Rewards timeline?,"NetApp HR Bot,Thrive Program,Thrive Rewards,what,the","timeline,date,rewards,Thrive"
+possible_new_nodes,Who makes Thrive Rewards decisions?,"NetApp HR Bot,Thrive Program,Thrive Rewards,decisions,makes",
+possible_new_nodes,What is NetApp's new Thrive Rewards program?,"NetApp HR Bot,Thrive Program,Thrive Rewards,what,'s","program,rewards,new"
+possible_new_nodes,When is Thrive Rewards this year?,"NetApp HR Bot,Thrive Program,Thrive Rewards,year,this",
+possible_new_nodes,"Should I show the direct answers? (Almost Always, Often, Sometimes, Rarely)","NetApp HR Bot,Thrive Program,Thrive Rewards,direct answers,sometimes","answer,show"
+possible_new_nodes,Do we still collect feedback?,"NetApp HR Bot,Thrive Program,Reflection,do,we","feedback,still,collect"
+possible_new_nodes,Are terminated employees eligible for salary rewards,"NetApp HR Bot,Thrive Program,Other,terminate,salary rewards,terminated",salary
+possible_new_nodes,"If I terminate, am I still eligible for ICP?","NetApp HR Bot,Thrive Program,Other,terminate,still,for","terminate,eligible,ICP"
+possible_new_nodes,Are terminated employees eligible for equity rewards?,"NetApp HR Bot,Thrive Program,Other,terminate,equity rewards,employees","equity,terminated"
+possible_new_nodes,What is this year's timeline for entering employee salary?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary,year 's timeline,entering","timeline,employee"
+possible_new_nodes,Where is the lump sum payment for individual exceeding salary max. guidelines?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary,lump sum payment,guidelines","lump-sum-payment,maximum,salary-max,lump"
+possible_new_nodes,Who is eligible for Thrive Rewards Salary?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary,eligible,who","salary,thrive-rewards"
+possible_new_nodes,Can I recommend salary structure above the maximum?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary,maximum,above","recommend,maximun,structure"
+possible_new_nodes,What can be done for an employee currently below minimum salary?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary,currently,below","minimum,employee"
+possible_new_nodes,Can I go above rewards guidelines for Salary?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary,above,can","guidelines,rewards"
+possible_new_nodes,When can my employee expect to see their Salary increase?,"NetApp HR Bot,Thrive Program,Thrive Rewards,Salary,expect,their","increase,employee"
+possible_new_nodes,What is Thrive?,"NetApp HR Bot,Thrive Program,what",thrive
+possible_new_nodes,What is Thrive Performance?,"NetApp HR Bot,Thrive Program,performance,what",thrive-performance
+possible_new_nodes,Am I eligible for Thrive Rewards?,"NetApp HR Bot,Thrive Program,rewards,for",eligible
+possible_new_nodes,When does the Rewards Blackout dates begin?,"NetApp HR Bot,Thrive Program,rewards blackout,dates",rewards-blackout
+possible_new_nodes,When does the Reflection form open in People Central?,"NetApp HR Bot,Thrive Program,central,people","form,manager,reflection"
+possible_new_nodes,When does the Performance Differentiation Tool open in People Central?,"NetApp HR Bot,Thrive Program,performance differentiation tool,open","people,central,performance-differentiation,tool"
+possible_new_nodes,When is the Rest of World ICP Payout?,"NetApp HR Bot,Thrive Program,icp payout,rest","global,icp-payout,world"
+possible_new_nodes,Why can't I see my employee in the Performance Differentiation Tool – Direct Reports?,"NetApp HR Bot,Thrive Program,performance differentiation tool,reports","performance-differentiation-tool,employee"
+possible_new_nodes,"When does Thrive Rewards Tool open in People Central for manager input (Salary, Equity, Promotion Open)?","NetApp HR Bot,Thrive Program,manager input,rewards","equity,central,thrive-rewards-tool,salary,people,manager-input,promotion"
+possible_new_nodes,When does thrive rewards Close for C-Staff?,"NetApp HR Bot,Thrive Program,c-staff,close",C-Staff
+possible_new_nodes,When does Salary and Promo Changes Take Effect?,"NetApp HR Bot,Thrive Program,changes,effect","salary,promo"
+possible_new_nodes,When does ICP Open for manager input in People Central?,"NetApp HR Bot,Thrive Program,manager input,open","manager-input,people,central,icp"
+possible_new_nodes,When is the Thrive Rewards eligibility cut-off date?,"NetApp HR Bot,Thrive Program,eligibility cut-off date,rewards","eligibility-date,thrive-rewards,cut-off"
+possible_new_nodes,"When does Thrive Rewards letters open in People Central (Salary, Equity and ICP)?","NetApp HR Bot,Thrive Program,central,rewards","equity,thrive-rewards,letters,salary,icp"
+possible_new_nodes,When does the Rewards Blackout End in People Central?,"NetApp HR Bot,Thrive Program,rewards blackout,central",rewards-blackout
+possible_new_nodes,What is the Performance Differentiation Tool?,"NetApp HR Bot,Thrive Program,performance differentiation tool,what",performance-differentiation-tool
+possible_new_nodes,What is a quarterly conversation?,"NetApp HR Bot,Thrive Program,what","quarterly,conversation"

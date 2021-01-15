@@ -1,8 +1,5 @@
 import os
 import sys
-
-sys.path.append(str(os.getcwd()))
-
 import argparse
 import uuid
 import copy
@@ -12,9 +9,10 @@ import traceback
 import re
 import datetime
 import csv
+import itertools
 
 from anytree import Node, PreOrderIter
-
+sys.path.append(str(os.getcwd()))
 from analyzer.kg_export.config.config import ontology_analyzer as conf
 from analyzer.kg_export.config.config import SYNONYM_DELIMITER, TRAIT_DELIMITER
 from log.Logger import Logger
@@ -31,7 +29,16 @@ HAS_FAQS = 3
 IS_MANDATORY = 4
 ALLOWED_CHECKS = {
     'unreachable_questions': 'UnreachableQuestions',
-    'questions_at_root': 'QuestionsAtRoot'
+    'questions_at_root': 'QuestionsAtRoot',
+    'longest_identical_subtree_cousins':'longest_identical_subtree_cousins',
+    'leaves_without_faqs':'leaves_without_faqs',
+    'chains_of_nodes':'chains_of_nodes',
+    'repeated_node_names':'repeated_node_names',
+    #'tree_too_long':'tree_too_long',
+    #'better_matched_paths':'better_matched_paths',
+    'overlapping_alternate_questions':'overlapping_alternate_questions',
+    'questions_with_multiple_matched_paths':'questions_with_multiple_matched_paths',
+    'possible_new_nodes':'possible_new_nodes'
 }
 
 
@@ -284,26 +291,57 @@ class OntologyAnalyzer:
     def generate_csv_report(self, data, file_path):
         header = []
         if not os.path.exists(file_path):
-            header = ['timestamp', 'language', 'error_type', 'question', 'path', 'tags']
+            header = ['error_type', 'question', 'path', 'tags']
         csv_result = []
         for error_type in ALLOWED_CHECKS:
             result_obj = data.get(error_type, {}).get('result', {})
             ques_array = result_obj.get('questions', [])
             paths = result_obj.get('paths', [])
             tags = result_obj.get('tags', [])
-            for ques_index in range(len(ques_array)):
-                path_str = ','.join(paths[ques_index]) if paths else ''
-                question = ques_array[ques_index]
-                tag_str = ','.join(tags[ques_index])
-                csv_result.append(['', '', ALLOWED_CHECKS[error_type], question, path_str, tag_str])
+            if error_type=="possible_new_nodes":
+              for ques_index in range(len(ques_array)):
+                    temp=[]
+                    temp.extend(paths[ques_index][0])
+                    temp.extend(paths[ques_index][1:])
+                    
 
-        if csv_result:
+                    path_str = ','.join(temp) if paths else ''
+                    question = ques_array[ques_index]
+                    tag_str = ','.join(tags[ques_index])
+                    csv_result.append([ALLOWED_CHECKS[error_type], question, path_str, tag_str])
+            elif error_type=="questions_with_multiple_matched_paths":
+                for ques_index in range(len(ques_array)):
+                    temp=[]
+                
+                    for matched_paths in paths[ques_index]["matches"]:
+
+                        temp.append("[matches]-->")
+                        temp.extend(matched_paths)
+
+                    #temp.extend(paths[ques_index][0])
+                    temp.append("[current path]->")
+                    temp.extend(paths[ques_index]["current_path"])
+                    
+
+                    path_str = ','.join(temp) if paths else ''
+                    question = ques_array[ques_index]
+                    tag_str = ','.join(tags[ques_index])
+                    csv_result.append([ALLOWED_CHECKS[error_type], question, path_str, tag_str])
+                
+            else:
+                for ques_index in range(len(ques_array)):
+                    path_str = ','.join(paths[ques_index]) if paths else ''
+                    question = ques_array[ques_index]
+                    tag_str = ','.join(tags[ques_index])
+                    csv_result.append([ALLOWED_CHECKS[error_type], question, path_str, tag_str])
+
+
             with open(file_path, 'w') as fp:
                 writer = csv.writer(fp)
                 if header:
                     writer.writerow(header)
-                first_row = [data.get('timestamp', ''), data.get('language', '')]
-                writer.writerow(first_row)
+                #first_row = [data.get('timestamp', ''), data.get('language', '')]
+                #writer.writerow(first_row)
                 for row in csv_result:
                     writer.writerow(row)
 
@@ -311,6 +349,8 @@ class OntologyAnalyzer:
         with open(file_path, 'w') as f:
             json.dump(data, f)
 
+    
+    
     def run_diagnostics(self, args):
         self.file_path = args['input_file_path']
         self.language = args['language']
@@ -324,6 +364,14 @@ class OntologyAnalyzer:
             self.lemmatizer.set_language(self.language)
             oa_logger.info('Ontology analyzer started')
             root_node, parent_faq_map, parent_tags_map = self.fetch_ontology()
+
+            return root_node, parent_faq_map, parent_tags_map 
+
+            # print("root ",root_node)
+            # print("parent_Faq ",parent_faq_map)
+            # print("parent_tags_map ",parent_tags_map)
+            quit()
+
             self.tree_traversal = [node for node in PreOrderIter(root_node)]
             response = dict()
             timestamp = datetime.datetime.utcnow().isoformat() + 'Z'
@@ -363,13 +411,15 @@ class OntologyAnalyzer:
 
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--file_path', help='path for input json file', required=True)
     parser.add_argument('--language', help='language of Ontology', default='en')
     _input_arguments = parser.parse_args()
 
     args = dict()
-    args['input_file_path'] = _input_arguments.file_path
-    args['language'] = _input_arguments.language
+    args['input_file_path'] =_input_arguments.file_path
+    args['language'] =_input_arguments.language
     oa = OntologyAnalyzer()
     oa.run_diagnostics(args)
+

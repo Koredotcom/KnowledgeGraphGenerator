@@ -2,6 +2,7 @@ import argparse
 import traceback
 
 from analyzer.ontology_analyzer import OntologyAnalyzer
+#from analyzer.ontology_analyzer import OntologyclAnalyzer
 from log.Logger import Logger
 from request_type.CSVExportParser import CSVExportParser
 from request_type.CSVParser import CSVParser as csvParser
@@ -47,6 +48,8 @@ class KnowledgeGraphGenerator(object):
         tag_term_map = graph_generator().generate_graph(response_payload.get('question_map'),
                                                         response_payload.get('stop_words'))
         response_payload['tag_term_map'] = tag_term_map
+## get terms and tags
+##
         response_payload = optimiser.optimise_graph(response_payload)
         response_generator = self.get_response_generator()
         response = response_generator.create_response(response_payload)
