@@ -48,8 +48,7 @@ class Parser(object, metaclass=abc.ABCMeta):
         finally:
             return csv_data
 
-    def read_file(self, file_type):
-        file_path = self.args.get('input_file_path')
+    def read_file(self, file_path, file_type):
         if file_type == 'json':
             return self.read_file_json(file_path)
         elif file_type == 'csv':

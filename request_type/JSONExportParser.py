@@ -12,17 +12,22 @@ phrase_finder = PhraseFinder()
 
 class JSONExportParser(Parser):
 
-    def parse(self):
+    def parse(self, file_path, file_type):
         try:
             response = dict()
-            self.faq_payload = self.read_file('json')
+            self.faq_payload = self.read_file(file_path, 'json')
             self.print_verbose('pre processing input data ...')
-            stop_tokens = self.get_stopwords_for_json()
-            questions_map, ques_to_altq_map = self.create_question_maps()
-            response['question_map'] = questions_map
-            response['altq_map'] = ques_to_altq_map
-            response['stop_words'] = stop_tokens
-            response['graph_synonyms'] = self.update_generated_synonyms(self.args['syn_file_path'], self.get_graph_level_synonyms())
+            if file_type == 'questions':
+                stop_tokens = self.get_stopwords_for_json()
+                questions_map, ques_to_altq_map = self.create_question_maps()
+                response['question_map'] = questions_map
+                response['altq_map'] = ques_to_altq_map
+                response['stop_words'] = stop_tokens
+                response['graph_synonyms'] = self.update_generated_synonyms(self.args['syn_file_path'], self.get_graph_level_synonyms())
+            elif file_type == 'graph':
+                paths = self.process_graph_paths()
+                response['paths'] = paths
+                #response['graph_data'] = self.faq_payload
             return response
         except Exception:
             error_msg = traceback.format_exc()
@@ -77,6 +82,18 @@ class JSONExportParser(Parser):
         except Exception:
             logger.error(traceback.format_exc())
             self.print_verbose('Failed in pre processing input')
+
+    def process_graph_paths(self):
+        graph_paths = list()
+        try:
+            logger.info('processing graph paths')
+            for paths in self.faq_payload.get('faqs') + self.faq_payload.get('unmappedpath'):
+                graph_paths.append(paths["terms"])
+            return graph_paths
+        except Exception as e:
+            print(e)
+            logger.error(traceback.format_exc())
+            self.print_verbose('Failed in pre processing graph input')
 
     def update_generated_synonyms(self, generated_syn_path, graph_level_synonyms):
         if generated_syn_path:

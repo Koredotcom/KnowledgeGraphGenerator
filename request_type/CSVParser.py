@@ -13,15 +13,18 @@ phrase_finder = PhraseFinder()
 
 class CSVParser(Parser):
 
-    def parse(self):
+    def parse(self, file_path, file_type):
         response = dict()
-        self.faq_payload = self.read_file('csv')
+        self.faq_payload = self.read_file(file_path, 'csv')
         self.print_verbose('pre processing input data ...')
-        stop_tokens = self.get_stopwords()
-        questions_map, ques_to_altq_map = self.create_question_maps()
-        response['question_map'] = questions_map
-        response['altq_map'] = ques_to_altq_map
-        response['stop_words'] = stop_tokens
+        if file_type == 'questions':
+            stop_tokens = self.get_stopwords()
+            questions_map, ques_to_altq_map = self.create_question_maps()
+            response['question_map'] = questions_map
+            response['altq_map'] = ques_to_altq_map
+            response['stop_words'] = stop_tokens
+        elif file_type == 'graph':
+            response['paths'] = []
         return response
 
     @staticmethod

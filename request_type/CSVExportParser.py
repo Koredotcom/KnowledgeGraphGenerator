@@ -11,16 +11,19 @@ phrase_finder = PhraseFinder()
 
 
 class CSVExportParser(Parser):
-    def parse(self):
+    def parse(self, file_path, file_type):
         response = dict()
         try:
             self.print_verbose('pre processing input data ...')
-            self.faq_payload = self.read_file('csv')
-            questions_map, ques_to_altq_map, faq_row_count = self.create_question_maps()
-            stop_tokens = self.get_stopwords_from_csv(faq_row_count)
-            response['question_map'] = questions_map
-            response['altq_map'] = ques_to_altq_map
-            response['stop_words'] = stop_tokens
+            self.faq_payload = self.read_file(file_path, 'csv')
+            if file_type == 'questions':
+                questions_map, ques_to_altq_map, faq_row_count = self.create_question_maps()
+                stop_tokens = self.get_stopwords_from_csv(faq_row_count)
+                response['question_map'] = questions_map
+                response['altq_map'] = ques_to_altq_map
+                response['stop_words'] = stop_tokens
+            elif file_type == 'graph':
+                response['paths'] = []
             return response
         except Exception:
             error_msg = traceback.format_exc()

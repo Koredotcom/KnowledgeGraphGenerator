@@ -67,19 +67,26 @@ class OntologyAnalyzer:
             global_term_synonym = global_synonyms.get(current_node, [])
             return current_node, current_node, synonym_set(synonyms + global_term_synonym), "default"
 
-    def valid_root(self):
-        root_nodes = {faq["terms"][-1] for faq in self.file_data['faqs'] if faq["terms"]}
+    def valid_root(self, mode = "analyze"):
+        if mode == "generate":
+            root_nodes = {faq["terms"][-1] for faq in self.file_data['faqs'] + self.file_data['unmappedpath'] if faq["terms"]}
+        else:
+            root_nodes = {faq["terms"][-1] for faq in self.file_data['faqs'] if faq["terms"]}
         return [root_nodes.pop(), True] if len(root_nodes) == 1 else ["Auntology", False]
 
-    def build_tree(self):
-        if not self.file_data['faqs']:
-            return None
+    def build_tree(self, mode = "analyze"):
+        if mode == "generate":
+            if not self.file_data['faqs'] + self.file_data['unmappedpath']:
+                return None
+        else:
+            if not self.file_data['faqs']:
+                return None
 
         path_node_id_map = {}
         node_at_node_map = {}
 
         # if root node missing in terms
-        root_name, is_valid_root = self.valid_root()
+        root_name, is_valid_root = self.valid_root(mode)
         global_synonyms = self.file_data['synonyms'] if 'synonyms' in self.file_data else {}
         root_raw_term, root_term, root_synonyms, root_term_usage = self.parse_term(root_name, global_synonyms)
         root_node_id = uuid.uuid4()
