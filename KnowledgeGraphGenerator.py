@@ -46,14 +46,6 @@ class KnowledgeGraphGenerator(object):
         print_verbose('identified questions input type and initiated parsing...')
         response_payload = questions_input_parser(args).parse(args.get('input_file_path'), 'questions')
         if args.get('taxonomy',False):
-            """
-            if args.get('graph_file_path') and args.get('graph_request_type'):
-                graph_input_parser = self.get_input_parser(args.get('graph_request_type'))
-                print_verbose('identified graph input type and initiated parsing...')
-                paths = graph_input_parser(args).parse(args.get('graph_file_path'), 'graph').get('paths')
-            else:
-                paths = []
-            """
             graph_generator = self.get_graph_generator('taxonomy_based')
             tag_term_map = graph_generator().generate_graph(args, 
                                                             response_payload.get('question_map'),

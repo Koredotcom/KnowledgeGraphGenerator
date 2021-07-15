@@ -87,8 +87,8 @@ class JSONExportParser(Parser):
         graph_paths = list()
         try:
             logger.info('processing graph paths')
-            for paths in self.faq_payload.get('faqs') + self.faq_payload.get('unmappedpath'):
-                graph_paths.append(paths["terms"])
+            for ix, paths in enumerate(self.faq_payload.get('faqs') + self.faq_payload.get('unmappedpath')):
+                graph_paths.append((ix, paths["terms"][::-1]))
             return graph_paths
         except Exception as e:
             print(e)
