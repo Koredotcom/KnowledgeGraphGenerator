@@ -17,6 +17,7 @@ lemmatizer = WordNetLemmatizer()
 logger = Logger()
 string_processor = StringProcessor()
 space_join = " ".join
+pipe_join = " | ".join
 
 PATH_INDEX = 0
 PATH_IDX_INDEX = 1
@@ -47,6 +48,13 @@ class TaxonomyBasedGenerator(object):
 
     def normalize_string(self, input_string, lang_code):
         return string_processor.normalize(input_string, lang_code)
+
+    def replace_synonyms(self, text, synonyms):
+        for key, words in synonyms.items():
+            regex_ex = pipe_join(words)
+            regex_ex = " " + regex_ex + " "
+            text = re.sub(regex_ex," " + key + " ",text)
+        return text
 
     def pre_process_nodes(self, paths, lang_code):
         lemmatized_paths = list()
@@ -132,9 +140,11 @@ class TaxonomyBasedGenerator(object):
             out_idx = max_consecutive_matched_nodes_idx[temp_idx]
             return intermediate_paths[out_idx]
 
-    def insert_question(self, question, original_paths, paths, stop_tokens):
+    def insert_question(self, question, original_paths, paths, stop_tokens, synonyms):
         terms = list()
+        path_idx = None
         try:
+            question = self.replace_synonyms(question, synonyms)
             tokens = word_tokenize(question)
             tokens = [lemmatizer.lemmatize(w) for w in tokens]
             tokens_n = self.generate_ngrams(tokens, 3)
@@ -153,9 +163,16 @@ class TaxonomyBasedGenerator(object):
         except:
             print('Error in inserting question !!!, go through log/auto_kg.log for detailed report')
             logger.error(traceback.format_exc())
-        return terms
+        return terms, path_idx
 
-    def generate_graph(self, args, qna_object_map, stop_tokens):
+    def add_unmapped_paths(self, paths, matched_paths_idx):
+        unmapped_paths = list()
+        for path_ix, path in paths:
+            if path_ix not in matched_paths_idx:
+                unmapped_paths.append({"terms" : path[::-1]})
+        return unmapped_paths
+
+    def generate_graph(self, args, qna_object_map, stop_tokens, synonyms):
         quest_ontology_map = defaultdict(dict)
         try:
             if args.get('graph_file_path') and args.get('graph_request_type'):
@@ -167,13 +184,16 @@ class TaxonomyBasedGenerator(object):
                 # add logic for other cases to generate the paths
                 paths = []
                 original_paths = [] 
+            mapped_paths_idx = list()
             for ques_id, qna_object in tqdm(qna_object_map.items()):
                 quest_ontology_map[ques_id]['question'] = qna_object.question
                 tags = ''
-                terms = self.insert_question(qna_object.normalized_ques, original_paths, paths, stop_tokens)
+                terms, path_idx = self.insert_question(qna_object.normalized_ques, original_paths, paths, stop_tokens, synonyms)
+                mapped_paths_idx.append(path_idx)
                 quest_ontology_map[ques_id]['terms'] = terms
                 tags = [tags] if tags else []
                 quest_ontology_map[ques_id]['tags'] = tags
+            quest_ontology_map['unmappedpath'] = self.add_unmapped_paths(original_paths, set(mapped_paths_idx))
         except Exception:
             logger.error(traceback.format_exc())
             raise Exception('Failed in generating ontology')

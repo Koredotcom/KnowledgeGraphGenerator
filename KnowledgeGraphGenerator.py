@@ -49,7 +49,8 @@ class KnowledgeGraphGenerator(object):
             graph_generator = self.get_graph_generator('taxonomy_based')
             tag_term_map = graph_generator().generate_graph(args, 
                                                             response_payload.get('question_map'),
-                                                            response_payload.get('stop_words'))
+                                                            response_payload.get('stop_words'),
+                                                            response_payload.get('graph_synonyms'))
         else:
             graph_generator = self.get_graph_generator()
             tag_term_map = graph_generator().generate_graph(response_payload.get('question_map'),

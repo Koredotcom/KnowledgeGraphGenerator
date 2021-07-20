@@ -68,6 +68,8 @@ class JSONGenerator(object):
                     result['dialogRefId'] = ""
 
                 response['faqs'].append(result)
+            if tag_term_map.get('unmappedpath',False):
+                response['unmappedpath'] = tag_term_map.get('unmappedpath')
 
             return response
         except Exception:
