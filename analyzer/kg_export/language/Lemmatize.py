@@ -1,16 +1,22 @@
 #!/usr/bin/python
 
+import imp
 import json
-from pattern.en import lemma as lemma_en
-from pattern.es import lemma as lemma_es
-from pattern.it import lemma as lemma_it
+import nltk
+from nltk.stem import WordNetLemmatizer 
+
+# Init the Wordnet Lemmatizer
 from nltk.stem.isri import ISRIStemmer
 from nltk.stem import RSLPStemmer
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from nltk import word_tokenize
 from nltk.stem.snowball import SnowballStemmer
 import tinysegmenter
-from analyzer.kg_export.language.kazlemmatizer import kazakh_lemma_tokenizer
+import traceback
+#from analyzer.kg_export.language.kazlemmatizer import kazakh_lemma_tokenizer
+
+nltk.download('wordnet')
+lemmatizer = WordNetLemmatizer()
 
 use_compound_split_german = False
 if use_compound_split_german:
@@ -77,24 +83,30 @@ class Lemmatizer:
         self.lang = 'aa'
         self.english_edit = {'banking': 'bank', 'us':'us', 'timing':'time', 'timings':'time'}
 
+    def lemmatize(self, sentence):
+        word_list = nltk.word_tokenize(sentence)
+        lemmatized_output = [lemmatizer.lemmatize(w) for w in word_list]
+        return lemmatized_output
 
-        
     def set_language(self, lang):
         """ set language"""
         self.lang = lang
         
     def english_lemmatizer(self, sentence):
-        """ english lemma"""
-        lemma_list = []
-        for word in word_tokenize(sentence):
-            lowercase_word = word.lower()
-            if lowercase_word in self.english_edit:
-                lemma_list.append(self.english_edit[lowercase_word])
-            elif en_dict.is_english_word(lowercase_word):
-                lemma_list.append(lemma_en(lowercase_word))
-            else:
-                lemma_list.append(lowercase_word)
-        return lemma_list
+        try:
+            """ english lemma"""
+            lemma_list = []
+            for word in word_tokenize(sentence):
+                lowercase_word = word.lower()
+                if lowercase_word in self.english_edit:
+                    lemma_list.append(self.english_edit[lowercase_word])
+                elif en_dict.is_english_word(lowercase_word):
+                    lemma_list.append(lemma_en(lowercase_word))
+                else:
+                    lemma_list.append(lowercase_word)
+            return lemma_list
+        except Exception as e:
+            traceback.print_exc()
 
     def chinese_tokenize(self,sentence):
         tokens = []
@@ -125,7 +137,11 @@ class Lemmatizer:
                 lemma_list.append(stem_nl.stem(word))
         return lemma_list
         
-    def lemmatize(self, sentence):
+    def lemmatize_old(self, sentence):
+        from pattern.en import lemma as lemma_en
+        from pattern.es import lemma as lemma_es
+        from pattern.it import lemma as lemma_it
+
         """ lemmatize string for list i18n support """
         lang = self.lang
         if lang == 'es' or lang == 'spanish':

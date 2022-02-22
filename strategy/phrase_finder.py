@@ -64,7 +64,7 @@ class PhraseFinder(object):
                     doc_grams.append(space_join(word))
 
         pattern = r'<VERB>?<ADV>*<VERB>+'
-        doc = textacy.Doc(sentence, lang=model)
+        doc = textacy.make_spacy_doc(sentence, lang=model)
         lists = textacy.extract.pos_regex_matches(doc, pattern)
         verbs_list = []
         for l in lists:
