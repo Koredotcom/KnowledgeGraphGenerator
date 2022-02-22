@@ -33,12 +33,12 @@ def train_word2Vec(corpus, dim):
 
 def fetch_synonyms(words, file_name, pretrained_model, zip_mode = False):
     model = gensim.models.KeyedVectors.load_word2vec_format(pretrained_model, binary=True)#, norm_only=True)
-    wv = model.wv
+#    wv = model.wv
 
     similarities = []
     for word in words:
         try:
-            similar = wv.most_similar(word, topn=3)
+            similar = model.most_similar(word, topn=3)
         except Exception:
             similar = [("", 0)]
 
