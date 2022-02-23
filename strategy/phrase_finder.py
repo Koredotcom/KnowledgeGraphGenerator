@@ -51,10 +51,11 @@ class PhraseFinder(object):
         return False
 
     def find_phrases(self, sentence, stop_tokens):
-        doc = lemma.lemmatize(sentence)
+        doc = nlp(sentence)
         doc_grams = []
         unigrams = []
-        for text in doc:
+        for i in doc.noun_chunks:
+            text = " ".join(lemma.lemmatize(i.text))
             tokens = [t for t in text.split() if t != "" and t not in stop_tokens]
             unigrams.extend(list(filter(lambda word: self.is_valid_word(word), tokens)))
             grams = self.generate_ngrams(tokens, 3)
