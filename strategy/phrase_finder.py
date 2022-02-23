@@ -4,9 +4,10 @@ from tqdm import tqdm
 from common import PHRASES_FREQ_THRESHOLD, UNIGRAM_FREQ_THRESHOLD, model, nlp
 import copy
 import textacy
+from analyzer.kg_export.language.Lemmatize import Lemmatizer
 
 space_join = " ".join
-
+lemma = Lemmatizer()
 
 class PhraseFinder(object):
     def __init__(self):
@@ -50,11 +51,10 @@ class PhraseFinder(object):
         return False
 
     def find_phrases(self, sentence, stop_tokens):
-        doc = nlp(sentence)
+        doc = lemma.lemmatize(sentence)
         doc_grams = []
         unigrams = []
-        for i in doc.noun_chunks:
-            text = " ".join([t.lemma_ if t.lemma_ != "-PRON-" else t.text for t in i])
+        for text in doc:
             tokens = [t for t in text.split() if t != "" and t not in stop_tokens]
             unigrams.extend(list(filter(lambda word: self.is_valid_word(word), tokens)))
             grams = self.generate_ngrams(tokens, 3)
