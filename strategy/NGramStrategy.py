@@ -6,9 +6,11 @@ from log.Logger import Logger
 import copy
 import traceback
 import re
+from analyzer.kg_export.language.Lemmatize import Lemmatizer
 
 logger = Logger()
 phrase_finder_obj = PhraseFinder()
+lemma = Lemmatizer()
 
 
 class GramBasedGenerator(object):
@@ -60,10 +62,7 @@ class GramBasedGenerator(object):
                 tags = ''
                 terms = list()
                 q = copy.deepcopy(ques)
-                doc = nlp(q)
-                doc = " ".join([t.lemma_ if t.lemma_ != "-PRON-" else t.text for t in doc])
-
-
+                doc = " ".join(lemma.lemmatize(q))
                 for term, cnt in phrases.most_common():
                     if cnt == 1:
                         break
